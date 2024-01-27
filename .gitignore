@@ -21,3 +21,7 @@ mono_crash.*.json
 .DS_Store
 *~
 *.blend1
+
+# Ignores for Reference 
+Reference/*
+!Reference/*.zip
