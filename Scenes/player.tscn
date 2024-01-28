@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://8wriebh1udaw"]
+[gd_scene load_steps=9 format=3 uid="uid://8wriebh1udaw"]
 
 [ext_resource type="Script" path="res://src/player.gd" id="1_bx01e"]
 [ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="2_5jii3"]
@@ -40,6 +40,8 @@ animations = [{
 "speed": 8.0
 }]
 
+[sub_resource type="AnimationRootNode" id="AnimationRootNode_inyux"]
+
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_bx01e")
 
@@ -50,4 +52,14 @@ shape = SubResource("RectangleShape2D_ukgr8")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_kdh6x")
-frame_progress = 0.638996
+frame_progress = 0.942079
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+root_node = NodePath("../AnimatedSprite2D")
+tree_root = SubResource("AnimationRootNode_inyux")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
