@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://8wriebh1udaw"]
+[gd_scene load_steps=11 format=3 uid="uid://8wriebh1udaw"]
 
 [ext_resource type="Script" path="res://src/player.gd" id="1_bx01e"]
 [ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="2_5jii3"]
@@ -9,6 +9,14 @@ size = Vector2(14, 27.5)
 [sub_resource type="AtlasTexture" id="AtlasTexture_c2003"]
 atlas = ExtResource("2_5jii3")
 region = Rect2(0, 0, 19, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0sspi"]
+atlas = ExtResource("2_5jii3")
+region = Rect2(24, 64, 24, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vjpjm"]
+atlas = ExtResource("2_5jii3")
+region = Rect2(0, 64, 24, 31)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_36n28"]
 atlas = ExtResource("2_5jii3")
@@ -26,6 +34,22 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 99999.0,
+"texture": SubResource("AtlasTexture_0sspi")
+}],
+"loop": true,
+"name": &"jump_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 99999.0,
+"texture": SubResource("AtlasTexture_vjpjm")
+}],
+"loop": true,
+"name": &"jump_up",
 "speed": 5.0
 }, {
 "frames": [{
@@ -52,7 +76,7 @@ shape = SubResource("RectangleShape2D_ukgr8")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_kdh6x")
-frame_progress = 0.942079
+animation = &"jump_down"
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 root_node = NodePath("../AnimatedSprite2D")
