@@ -8,6 +8,7 @@ extends CharacterBody2D
 var curr_jump_pos = 0
 var last_dir_right
 var jumping = false
+var sprite_angle = 0.0
 
 signal animation_change(animation)
 
@@ -17,10 +18,11 @@ func horizontal_movement(is_jump):
 	last_dir_right = horizontal_input > 0
 	# horizontal velocity which moves player left or right based on input
 	velocity.x = horizontal_input * speed
-	if velocity.x != 0 && !is_jump:
-		$AnimatedSprite2D.play('walk')
-	elif !is_jump:
-		$AnimatedSprite2D.play('default')
+	if !is_jump:
+		if velocity.x != 0:
+			$AnimatedSprite2D.play('walk')
+		else:
+			$AnimatedSprite2D.play('default')
 
 #movement and physics
 func _physics_process(delta):
@@ -50,5 +52,17 @@ func _physics_process(delta):
 		$AnimatedSprite2D.flip_h = false
 	else:
 		$AnimatedSprite2D.flip_h = true
+		
+	print(get_floor_angle(), ' ', get_floor_normal().angle())
+	if is_on_floor():
+		var angle = get_floor_angle()
+		if angle != sprite_angle:
+			var angle_delta
+			if last_dir_right: angle_delta = (sprite_angle - angle)
+			else: angle_delta = (angle - sprite_angle)
+			$AnimatedSprite2D.rotate(angle_delta)
+			sprite_angle = angle
+	else:
+		$AnimatedSprite2D.rotation = 0
 	#applies movement
 	move_and_slide()
