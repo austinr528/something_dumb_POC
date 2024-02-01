@@ -1,8 +1,10 @@
 extends CharacterBody2D
 
+class_name Hero
+
 # Player movement
 @export var speed = 100
-@export var gravity = 200
+@export var gravity = 350
 @export var jump = -175
 
 var curr_jump_pos = 0
@@ -12,6 +14,7 @@ var jumping = false
 var sprite_angle = 0.0
 
 signal animation_change(animation)
+
 
 func horizontal_movement(is_jump):
 	# if keys are pressed it will return 1 for ui_right, -1 for ui_left, and 0 for neither
@@ -77,7 +80,6 @@ func _physics_process(delta):
 	if is_on_floor():
 		var angle = get_floor_normal().angle()
 		if angle != sprite_angle:
-			var angle_delta
 			rotation = angle + (PI/2)
 			sprite_angle = rotation
 

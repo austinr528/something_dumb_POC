@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://8wriebh1udaw"]
+[gd_scene load_steps=13 format=3 uid="uid://8wriebh1udaw"]
 
 [ext_resource type="Script" path="res://src/Hero.gd" id="1_bx01e"]
 [ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="2_5jii3"]
@@ -67,16 +67,7 @@ animations = [{
 
 [sub_resource type="AnimationRootNode" id="AnimationRootNode_inyux"]
 
-[sub_resource type="SystemFont" id="SystemFont_ukix7"]
-generate_mipmaps = true
-subpixel_positioning = 0
-
 [sub_resource type="LabelSettings" id="LabelSettings_30675"]
-line_spacing = 5.0
-font = SubResource("SystemFont_ukix7")
-font_size = 8
-font_color = Color(0, 0.00392157, 0.00784314, 1)
-shadow_size = 0
 
 [node name="Hero" type="CharacterBody2D"]
 script = ExtResource("1_bx01e")
@@ -94,11 +85,11 @@ root_node = NodePath("../AnimatedSprite2D")
 tree_root = SubResource("AnimationRootNode_inyux")
 
 [node name="Label" type="Label" parent="."]
-texture_filter = 4
-offset_left = -11.694
-offset_top = -32.1498
-offset_right = 15.306
-offset_bottom = -9.1498
+texture_filter = 1
+offset_left = -16.1652
+offset_top = -40.4251
+offset_right = 40.8348
+offset_bottom = -17.4251
 label_settings = SubResource("LabelSettings_30675")
 script = ExtResource("3_iwwu3")
 
