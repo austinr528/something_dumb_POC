@@ -15,3 +15,11 @@
 ## Random Ideas:
     - a pig shooting a canon that shoots out other pigs/other enemies
     - Ravens (huginn and muninn)
+
+
+## Title ideas:
+    - Hector and the <something> belt buckle of <something>
+    - Hector and the <something> belt of <something>
+
+## Story/mechanics:
+    - So we traverse this/these world(s) trying to fix/find (or whatever) something. Along the way we pickup belt buckles or maybe notch things into the belt that give interesting mechanics to the game. 
