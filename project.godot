@@ -11,9 +11,9 @@ config_version=5
 [application]
 
 config/name="Something_Dumb"
-run/main_scene="res://Scenes/main.tscn"
+run/main_scene="res://Scenes/d_play_ground.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://icon.png"
 
 [input]
 
