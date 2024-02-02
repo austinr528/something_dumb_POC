@@ -26,9 +26,11 @@ func horizontal_movement(is_jump):
 	if !is_jump:
 		if velocity.x != 0:
 			$AnimatedSprite2D.play('walk')
+			emit_signal('animation_change', 'walk')
 			_normalize_movement_to_slope()
 		else:
 			$AnimatedSprite2D.play('default')
+			emit_signal('animation_change', 'default')
 
 func _normalize_movement_to_slope():
 	if direction > 0:
@@ -58,10 +60,12 @@ func _physics_process(delta):
 	if jumping && curr_jump_pos > position.y:
 		print(curr_jump_pos, '   ', position.y)	
 		curr_jump_pos = position.y
-		$AnimatedSprite2D.play('jump_up')		
+		$AnimatedSprite2D.play('jump_up')
+		emit_signal('animation_change', 'jump_up')
 	elif jumping:
 		print('down')
 		$AnimatedSprite2D.play('jump_down')
+		emit_signal('animation_change', 'jump_down')
 	
 	if !is_jumped && is_on_floor():
 		jumping = false
@@ -79,11 +83,12 @@ func _physics_process(delta):
 	# Determine the angle of the character
 	if is_on_floor():
 		var angle = get_floor_normal().angle()
+		
 		if angle != sprite_angle:
 			rotation = angle + (PI/2)
 			sprite_angle = rotation
 
 	else:
-		$AnimatedSprite2D.rotation = 0
+		rotation = 0
 	#applies movement
 	move_and_slide()

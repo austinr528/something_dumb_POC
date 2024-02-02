@@ -284,3 +284,5 @@ one_way_collision = true
 [node name="Timer" type="Timer" parent="FallingPlatform"]
 wait_time = 1.5
 one_shot = true
+
+[connection signal="body_entered" from="FallingPlatform/Area2D" to="FallingPlatform" method="_on_area_2d_body_entered"]
