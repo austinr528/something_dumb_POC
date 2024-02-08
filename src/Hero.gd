@@ -1,21 +1,14 @@
-extends CharacterBody2D
+extends "ICharacter.gd"
 
 class_name Hero
 
-# Player movement
-@export var speed = 100
-@export var gravity = 350
-@export var jump = -175
-
 var curr_jump_pos = 0
-var last_dir_right = true
-var direction = 0
-var jumping = false
+
 var sprite_angle = 0.0
 
 signal animation_change(animation)
 
-func horizontal_movement(is_jump):
+func _horizontal_movement(is_jump):
 	# if keys are pressed it will return 1 for ui_right, -1 for ui_left, and 0 for neither
 	var horizontal_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 	direction = horizontal_input
@@ -69,7 +62,7 @@ func _physics_process(delta):
 	if !is_jumped && is_on_floor():
 		jumping = false
 		
-	horizontal_movement(jumping)
+	_horizontal_movement(jumping)
 	
 	# orient the character to face the correct direction
 	if direction > 0 :
