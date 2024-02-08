@@ -78,12 +78,12 @@ font_size = 8
 font_color = Color(0, 0.00392157, 0.00784314, 1)
 shadow_size = 0
 
+[sub_resource type="Animation" id="Animation_fc5in"]
+length = 0.001
+
 [sub_resource type="Animation" id="Animation_gduxg"]
 resource_name = "walk"
 loop_mode = 1
-
-[sub_resource type="Animation" id="Animation_fc5in"]
-length = 0.001
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gfdwx"]
 _data = {

@@ -79,8 +79,14 @@ func _physics_process(delta):
 		if angle != sprite_angle:
 			rotation = angle + (PI/2)
 			sprite_angle = rotation
-
 	else:
 		rotation = 0
 	#applies movement
 	move_and_slide()
+
+
+func bounce_on_box():
+	print('bounce on BOX foo')
+	jumping = true
+	curr_jump_pos = position.y
+	velocity.y = jump

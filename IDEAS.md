@@ -25,3 +25,7 @@
 
 ## Story/mechanics:
     - So we traverse this/these world(s) trying to fix/find (or whatever) something. Along the way we pickup belt buckles or maybe notch things into the belt that give interesting mechanics to the game.
+
+## Animations
+    - Slide animation his hat comes off and grabs it
+    - Fall animation hat could separate from body
