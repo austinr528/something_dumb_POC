@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://8wriebh1udaw"]
+[gd_scene load_steps=18 format=3 uid="uid://8wriebh1udaw"]
 
 [ext_resource type="Script" path="res://src/Hero.gd" id="1_bx01e"]
 [ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="2_5jii3"]
@@ -18,6 +18,10 @@ region = Rect2(24, 64, 24, 31)
 [sub_resource type="AtlasTexture" id="AtlasTexture_vjpjm"]
 atlas = ExtResource("2_5jii3")
 region = Rect2(0, 64, 24, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2gl3w"]
+atlas = ExtResource("2_5jii3")
+region = Rect2(0, 96, 20, 31)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_36n28"]
 atlas = ExtResource("2_5jii3")
@@ -51,6 +55,14 @@ animations = [{
 }],
 "loop": true,
 "name": &"jump_up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2gl3w")
+}],
+"loop": true,
+"name": &"slide",
 "speed": 5.0
 }, {
 "frames": [{
@@ -101,7 +113,7 @@ shape = SubResource("CapsuleShape2D_rue0i")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_kdh6x")
-animation = &"walk"
+animation = &"slide"
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 root_node = NodePath("../AnimatedSprite2D")
