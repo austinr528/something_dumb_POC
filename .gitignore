@@ -25,3 +25,4 @@ mono_crash.*.json
 # Ignores for Reference 
 Reference/*
 !Reference/*.zip
+!Reference/*.gif
