@@ -1,11 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://8wriebh1udaw"]
+[gd_scene load_steps=17 format=3 uid="uid://8wriebh1udaw"]
 
 [ext_resource type="Script" path="res://src/Hero.gd" id="1_bx01e"]
 [ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="2_5jii3"]
 [ext_resource type="Script" path="res://src/HeroLabel.gd" id="3_iwwu3"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ukgr8"]
-size = Vector2(13, 27)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rue0i"]
+radius = 6.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c2003"]
 atlas = ExtResource("2_5jii3")
@@ -78,16 +78,30 @@ font_size = 8
 font_color = Color(0, 0.00392157, 0.00784314, 1)
 shadow_size = 0
 
+[sub_resource type="Animation" id="Animation_gduxg"]
+resource_name = "walk"
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_fc5in"]
+length = 0.001
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gfdwx"]
+_data = {
+"RESET": SubResource("Animation_fc5in"),
+"walk": SubResource("Animation_gduxg")
+}
+
 [node name="Hero" type="CharacterBody2D"]
 script = ExtResource("1_bx01e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, 1.5)
-shape = SubResource("RectangleShape2D_ukgr8")
+top_level = true
+shape = SubResource("CapsuleShape2D_rue0i")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_kdh6x")
+animation = &"walk"
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 root_node = NodePath("../AnimatedSprite2D")
@@ -103,5 +117,8 @@ label_settings = SubResource("LabelSettings_30675")
 script = ExtResource("3_iwwu3")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_gfdwx")
+}
 
 [connection signal="animation_change" from="." to="Label" method="_on_hero_animation_change"]

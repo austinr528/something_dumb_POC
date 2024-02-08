@@ -6,21 +6,22 @@ var fallen = false
 func _ready():
 	pass
 
-func _is_supporting(body):
-	return body.is_on_floor()
-
 func _physics_process(delta):
-	print(Timer)
-	print('time: ', $Timer.time_left)
-	print('stopped: ', $Timer.is_stopped())
+	print('time: ', $PlatTimer.time_left)
+	print('stopped: ', $PlatTimer.is_stopped())
+	print('on screen: ', $Sprite2D2/VisibleOnScreenNotifier2D.is_on_screen())
 	
 	
-	if !fallen && $Timer.time_left < 0.2 && !$Timer.is_stopped():
+	if !fallen && $PlatTimer.time_left < 0.2 && !$PlatTimer.is_stopped():
 		fallen = true
 	elif fallen:
 		position.y += 4;
+	if fallen && !$Sprite2D2/VisibleOnScreenNotifier2D.is_on_screen():
+		queue_free()
 
 
-func _on_area_2d_body_entered(body):
-	if !fallen && _is_supporting(body) && $Timer.is_stopped():
-		$Timer.start()
+func _on_area_2d_2_body_entered(body):
+	# This logic checks that the platform has not fallen, the body is standing on something, and that the time is stopped.
+	# The second clause may be too vague but we can cross that bridge if we ever get to it.
+	if !fallen && body.is_on_floor() && $PlatTimer.is_stopped():
+		$PlatTimer.start()

@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://ypcv53bboe2h"]
+
+[ext_resource type="Script" path="res://src/FallingPlatform.gd" id="1_77pvs"]
+[ext_resource type="Texture2D" uid="uid://1bhutcdfgr1e" path="res://Assets/GrassGround/TreeBG.png" id="2_j4tfs"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_68b10"]
+atlas = ExtResource("2_j4tfs")
+region = Rect2(288, 120, 56, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_knbui"]
+size = Vector2(155.231, 0.132787)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7obec"]
+size = Vector2(155.075, 15.1457)
+
+[node name="FallingPlatform" type="AnimatableBody2D"]
+z_index = -1
+texture_filter = 1
+script = ExtResource("1_77pvs")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(287.614, 381.373)
+scale = Vector2(2.76589, 1)
+texture = SubResource("AtlasTexture_68b10")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Sprite2D2"]
+position = Vector2(0.139549, -0.872986)
+scale = Vector2(2.89238, 0.85)
+
+[node name="Area2D2" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2"]
+position = Vector2(287.81, 373.517)
+shape = SubResource("RectangleShape2D_knbui")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+position = Vector2(287.617, 381.291)
+shape = SubResource("RectangleShape2D_7obec")
+one_way_collision = true
+
+[node name="PlatTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="Area2D2" to="." method="_on_area_2d_2_body_entered"]

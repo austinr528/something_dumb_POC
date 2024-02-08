@@ -1,10 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://mtvo73itg2ng"]
+[gd_scene load_steps=7 format=3 uid="uid://mtvo73itg2ng"]
 
 [ext_resource type="TileSet" uid="uid://bgtxasewjv8jh" path="res://Assets/GrassGround/GrassGroundTileSet.tres" id="1_4bwqe"]
 [ext_resource type="PackedScene" uid="uid://8wriebh1udaw" path="res://Scenes/player.tscn" id="2_ocqr6"]
 [ext_resource type="Texture2D" uid="uid://6m7d1ox7prcm" path="res://Assets/GrassGround/newTiles.png" id="3_otsof"]
-[ext_resource type="Texture2D" uid="uid://1bhutcdfgr1e" path="res://Assets/GrassGround/TreeBG.png" id="4_55k1n"]
-[ext_resource type="Script" path="res://src/FallingPlatform.gd" id="4_q7snv"]
+[ext_resource type="PackedScene" uid="uid://ypcv53bboe2h" path="res://Scenes/falling_platform.tscn" id="4_ja0r8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uukpm"]
 texture = ExtResource("3_otsof")
@@ -215,16 +214,6 @@ texture = ExtResource("3_otsof")
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_uukpm")
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_820td"]
-atlas = ExtResource("4_55k1n")
-region = Rect2(288, 120, 56, 16)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b6h0c"]
-size = Vector2(155.231, 0.132787)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q4hjb"]
-size = Vector2(155.075, 15.1457)
-
 [node name="d_play_ground2" type="Node2D"]
 
 [node name="TileMap" type="TileMap" parent="."]
@@ -260,29 +249,4 @@ tile_set = SubResource("TileSet_sefuq")
 format = 2
 layer_0/tile_data = PackedInt32Array(3080218, 0, 2, 3080219, 65536, 2, 3080220, 0, 2, 3080221, 65536, 2, 3080222, 0, 2, 3080223, 65536, 2, 3080224, 0, 2, 3080225, 65536, 2, 3145754, 0, 3, 3145755, 65536, 3, 3145756, 0, 3, 3145757, 65536, 3, 3145758, 0, 3, 3145759, 65536, 3, 3145760, 0, 3, 3145761, 65536, 3, 2097145, 0, 2, 2162681, 0, 3, 2097146, 65536, 2, 2162682, 65536, 3, 2097147, 0, 2, 2162683, 0, 3, 2097148, 65536, 2, 2162684, 65536, 3, 2097149, 0, 2, 2162685, 0, 3, 2097150, 65536, 2, 2162686, 65536, 3, 2097151, 0, 2, 2162687, 0, 3, 2031616, 65536, 2, 2097152, 65536, 3, 2031617, 0, 2, 2097153, 0, 3, 2031618, 65536, 2, 2097154, 65536, 3)
 
-[node name="FallingPlatform" type="AnimatableBody2D" parent="."]
-z_index = -1
-texture_filter = 1
-script = ExtResource("4_q7snv")
-
-[node name="Sprite2D" type="Sprite2D" parent="FallingPlatform"]
-position = Vector2(287.614, 381.373)
-scale = Vector2(2.76589, 1)
-texture = SubResource("AtlasTexture_820td")
-
-[node name="Area2D" type="Area2D" parent="FallingPlatform"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FallingPlatform/Area2D"]
-position = Vector2(287.81, 373.517)
-shape = SubResource("RectangleShape2D_b6h0c")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FallingPlatform"]
-position = Vector2(287.617, 381.291)
-shape = SubResource("RectangleShape2D_q4hjb")
-one_way_collision = true
-
-[node name="Timer" type="Timer" parent="FallingPlatform"]
-wait_time = 1.5
-one_shot = true
-
-[connection signal="body_entered" from="FallingPlatform/Area2D" to="FallingPlatform" method="_on_area_2d_body_entered"]
+[node name="FallingPlatform" parent="." instance=ExtResource("4_ja0r8")]

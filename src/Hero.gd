@@ -15,7 +15,6 @@ var sprite_angle = 0.0
 
 signal animation_change(animation)
 
-
 func horizontal_movement(is_jump):
 	# if keys are pressed it will return 1 for ui_right, -1 for ui_left, and 0 for neither
 	var horizontal_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
