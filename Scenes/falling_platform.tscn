@@ -1,11 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://cbv2xoi5q2yv0"]
+[gd_scene load_steps=5 format=3 uid="uid://cbv2xoi5q2yv0"]
 
 [ext_resource type="Script" path="res://src/FallingPlatform.gd" id="1_77pvs"]
-[ext_resource type="Texture2D" uid="uid://1bhutcdfgr1e" path="res://Assets/GrassGround/TreeBG.png" id="2_j4tfs"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_68b10"]
-atlas = ExtResource("2_j4tfs")
-region = Rect2(288, 120, 56, 16)
+[ext_resource type="Texture2D" uid="uid://oyn37kescnl5" path="res://Assets/FallingPlatform/woodpat.tres" id="2_qdqpr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_knbui"]
 size = Vector2(155.231, 0.132787)
@@ -19,9 +15,9 @@ texture_filter = 1
 script = ExtResource("1_77pvs")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
-position = Vector2(287.614, 381.373)
-scale = Vector2(2.76589, 1)
-texture = SubResource("AtlasTexture_68b10")
+position = Vector2(287.485, 381.507)
+scale = Vector2(2.42825, 1.99287)
+texture = ExtResource("2_qdqpr")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Sprite2D2"]
 position = Vector2(0.139549, -0.872986)
