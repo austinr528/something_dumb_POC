@@ -25,10 +25,19 @@
 
 ## Story/mechanics:
     - So we traverse this/these world(s) trying to fix/find (or whatever) something. Along the way we pickup belt buckles or maybe notch things into the belt that give interesting mechanics to the game.
-    - neuclear wasteland
+    - Nuclear Wasteland
+
     #### levels:
+        - wasteland ruins (this is probably the tileset we have now (purple brick, green grass))
+            - one way floor should be bare purple brick
+            - falling platform should be darker crumbly thin purple brick, crumble and fall
         - wasteland farm
-        - wasteland warehouse 
+        - wasteland warehouse
+
+## Enemies/Baddies:
+    - Pig cannon guy (todo)
+    - Yoke guy
+    - Box guy
 
 ## Animations
     - Slide animation his hat comes off and grabs it
