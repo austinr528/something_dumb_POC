@@ -1,12 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://dndbgk2hwebqn"]
 
-[ext_resource type="PackedScene" uid="uid://dhur4lkgicc1" path="res://Scenes/hector.tscn" id="1_tbcj8"]
+[ext_resource type="PackedScene" uid="uid://bwsrrnhmk5wp6" path="res://Scenes/hector.tscn" id="1_tbcj8"]
 [ext_resource type="TileSet" uid="uid://bgtxasewjv8jh" path="res://Assets/GrassGround/GrassGroundTileSet.tres" id="2_igy1j"]
 
 [node name="Main" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_tbcj8")]
-texture_filter = 1
 position = Vector2(30.9932, 511.655)
 scale = Vector2(2, 2)
 

@@ -1,11 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://dymngx1hsdy8k"]
+[gd_scene load_steps=4 format=3 uid="uid://cupebkngs7xpl"]
 
 [ext_resource type="Script" path="res://src/Character.gd" id="1_o61xr"]
 [ext_resource type="Script" path="res://src/CharLabel.gd" id="2_7ty36"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jxuhc"]
 radius = 6.125
-height = 31.875
+height = 32.0
 
 [node name="Character" type="CharacterBody2D"]
 script = ExtResource("1_o61xr")
