@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=15 format=3 uid="uid://lovxywgmi1cm"]
+[gd_resource type="SpriteFrames" load_steps=18 format=3 uid="uid://bxpcyrilfjfgl"]
 
 [ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="1_jkb5t"]
 
@@ -41,6 +41,18 @@ region = Rect2(24, 66, 23, 33)
 [sub_resource type="AtlasTexture" id="AtlasTexture_5vqrx"]
 atlas = ExtResource("1_jkb5t")
 region = Rect2(0, 66, 23, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_23kkb"]
+atlas = ExtResource("1_jkb5t")
+region = Rect2(42, 161, 21, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hivxl"]
+atlas = ExtResource("1_jkb5t")
+region = Rect2(21, 161, 21, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1vi61"]
+atlas = ExtResource("1_jkb5t")
+region = Rect2(0, 161, 21, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_71mvo"]
 atlas = ExtResource("1_jkb5t")
@@ -108,6 +120,20 @@ animations = [{
 "loop": true,
 "name": &"jump_up",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_23kkb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hivxl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1vi61")
+}],
+"loop": true,
+"name": &"run",
+"speed": 16.0
 }, {
 "frames": [{
 "duration": 1.0,

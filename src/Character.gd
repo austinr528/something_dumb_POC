@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
 @export var speed = 100
-@export var gravity = 350
-@export var jump = -175
+@export var gravity = 600
+@export var jump = -300
 
 var last_dir_right = true
 # positive means right negitive means left
@@ -10,6 +10,7 @@ var direction = 0
 var jumping = false
 var curr_jump_pos = 0
 var sprite_angle = 0.0
+var running = false
 
 signal animation_change(animation)
 
