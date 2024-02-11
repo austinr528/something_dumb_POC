@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwtv05flf441j"]
+
+[ext_resource type="Script" path="res://src/BounceEnemy.gd" id="1_wet7y"]
+
+[node name="BounceEnemy" type="CharacterBody2D"]
+script = ExtResource("1_wet7y")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="AnimatedSprite2D"]
+
+[node name="BounceArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BounceArea"]
+
+[node name="PainArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PainArea"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[connection signal="body_entered" from="BounceArea" to="." method="_on_bounce_area_body_entered"]

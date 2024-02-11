@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dndbgk2hwebqn"]
 
-[ext_resource type="PackedScene" uid="uid://8wriebh1udaw" path="res://Scenes/player.tscn" id="1_tbcj8"]
+[ext_resource type="PackedScene" uid="uid://dhur4lkgicc1" path="res://Scenes/hector.tscn" id="1_tbcj8"]
 [ext_resource type="TileSet" uid="uid://bgtxasewjv8jh" path="res://Assets/GrassGround/GrassGroundTileSet.tres" id="2_igy1j"]
 
 [node name="Main" type="Node2D"]

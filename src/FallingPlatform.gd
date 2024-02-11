@@ -7,11 +7,9 @@ func _ready():
 	pass
 
 func _physics_process(delta):
-	print('time: ', $PlatTimer.time_left)
-	print('stopped: ', $PlatTimer.is_stopped())
-	print('on screen: ', $Sprite2D2/VisibleOnScreenNotifier2D.is_on_screen())
-	
-	
+	#print('time: ', $PlatTimer.time_left)
+	#print('stopped: ', $PlatTimer.is_stopped())
+	#print('on screen: ', $Sprite2D2/VisibleOnScreenNotifier2D.is_on_screen())
 	if !fallen && $PlatTimer.time_left < 0.2 && !$PlatTimer.is_stopped():
 		fallen = true
 	elif fallen:

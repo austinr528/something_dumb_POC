@@ -11,6 +11,8 @@ var limit_movement = 30
 var start_pos = 0
 var direction = -1
 
+const YOKE = preload("res://Scenes/yoke_attack.tscn")
+
 func _ready():
 	start_pos = position.x
 
@@ -23,18 +25,22 @@ func _physics_process(delta):
 		$AnimatedSprite2D.flip_h = true
 		
 	if $AnimatedSprite2D/VisibleOnScreenNotifier2D.is_on_screen():
-		print(get_node('../Hero'))
-		print('dir ', get_global_position().direction_to(get_node('../Hero').get_global_position()))
-		direction = get_global_position().direction_to(get_node('../Hero').get_global_position()).x
+		if $AttackTimer.is_stopped(): 
+			$AttackTimer.start()
+		direction = get_global_position().direction_to(get_node('../Hector').get_global_position()).x
 		$AnimatedSprite2D.play('walk')
 		velocity.x = direction * speed
-		if abs(position.x - start_pos) >= limit_movement:
-			direction *= -1
 		move_and_slide()
-
 
 func _on_bounce_area_body_entered(body):
 	if body.has_method('bounce_on_box'):
-		$AnimatedSprite2D.play('flat')
-		direction = 0
 		body.bounce_on_box()
+
+func _on_attack_timer_timeout():
+	var yoke = YOKE.instantiate()
+	yoke.global_position.y = global_position.y - 43
+	yoke.global_position.x = global_position.x
+	print("position ", position)
+	print("direction ", direction)
+	yoke.direction = direction
+	get_parent().add_child(yoke)

@@ -1,0 +1,37 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://cwhy2g1llclgc"]
+
+[ext_resource type="Texture2D" uid="uid://61keha31osxy" path="res://Assets/BoxGuy/boxGuy.png" id="1_m41n1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7j0t0"]
+atlas = ExtResource("1_m41n1")
+region = Rect2(0, 25, 25, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0x2qq"]
+atlas = ExtResource("1_m41n1")
+region = Rect2(0, 0, 25, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_of6ay"]
+atlas = ExtResource("1_m41n1")
+region = Rect2(25, 0, 25, 25)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7j0t0")
+}],
+"loop": true,
+"name": &"flat",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0x2qq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_of6ay")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]

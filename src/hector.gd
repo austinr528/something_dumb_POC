@@ -1,12 +1,4 @@
-extends "ICharacter.gd"
-
-class_name Hero
-
-var curr_jump_pos = 0
-
-var sprite_angle = 0.0
-
-signal animation_change(animation)
+extends "res://src/Character.gd"
 
 func _horizontal_movement(is_jump):
 	# if keys are pressed it will return 1 for ui_right, -1 for ui_left, and 0 for neither
@@ -17,11 +9,11 @@ func _horizontal_movement(is_jump):
 	print(velocity.x)
 	if !is_jump:
 		if velocity.x != 0:
-			$AnimatedSprite2D.play('walk')
+			$CharSprite.play('walk')
 			emit_signal('animation_change', 'walk')
 			_normalize_movement_to_slope()
 		else:
-			$AnimatedSprite2D.play('default')
+			$CharSprite.play('default')
 			emit_signal('animation_change', 'default')
 
 func _normalize_movement_to_slope():
@@ -52,11 +44,11 @@ func _physics_process(delta):
 	if jumping && curr_jump_pos > position.y:
 		print(curr_jump_pos, '   ', position.y)	
 		curr_jump_pos = position.y
-		$AnimatedSprite2D.play('jump_up')
+		$CharSprite.play('jump_up')
 		emit_signal('animation_change', 'jump_up')
 	elif jumping:
 		print('down')
-		$AnimatedSprite2D.play('jump_down')
+		$CharSprite.play('jump_down')
 		emit_signal('animation_change', 'jump_down')
 	
 	if !is_jumped && is_on_floor():
@@ -66,10 +58,10 @@ func _physics_process(delta):
 	
 	# orient the character to face the correct direction
 	if direction > 0 :
-		$AnimatedSprite2D.flip_h = false
+		$CharSprite.flip_h = false
 		last_dir_right = true
 	elif direction < 0:
-		$AnimatedSprite2D.flip_h = true
+		$CharSprite.flip_h = true
 		last_dir_right = false
 		
 	# Determine the angle of the character
@@ -84,9 +76,5 @@ func _physics_process(delta):
 	#applies movement
 	move_and_slide()
 
-
-func bounce_on_box():
-	print('bounce on BOX foo')
-	jumping = true
-	curr_jump_pos = position.y
-	velocity.y = jump
+func take_damage():
+	print('damage') 

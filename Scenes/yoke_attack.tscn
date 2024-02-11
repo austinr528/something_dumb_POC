@@ -1,0 +1,104 @@
+[gd_scene load_steps=13 format=3 uid="uid://dm2tsdpbh1v0g"]
+
+[ext_resource type="Script" path="res://src/yoke_attack.gd" id="1_a2lml"]
+[ext_resource type="Texture2D" uid="uid://dglyptcs1o2sb" path="res://Assets/YokeGuy/yokeguy.png" id="2_6w87s"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h7lsh"]
+atlas = ExtResource("2_6w87s")
+region = Rect2(80, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0a6wl"]
+atlas = ExtResource("2_6w87s")
+region = Rect2(0, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ntsks"]
+atlas = ExtResource("2_6w87s")
+region = Rect2(16, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ndb74"]
+atlas = ExtResource("2_6w87s")
+region = Rect2(32, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_86pqp"]
+atlas = ExtResource("2_6w87s")
+region = Rect2(48, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_trjwl"]
+atlas = ExtResource("2_6w87s")
+region = Rect2(64, 45, 15, 15)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ypyn4"]
+atlas = ExtResource("2_6w87s")
+region = Rect2(80, 45, 15, 15)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_o8qir"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h7lsh")
+}],
+"loop": true,
+"name": &"splat",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0a6wl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ntsks")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ndb74")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_86pqp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_trjwl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ypyn4")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 4.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uom05"]
+size = Vector2(9.17702, 3.46478)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_adfrr"]
+size = Vector2(6.56402, 0.787453)
+
+[node name="YokeAttack" type="CharacterBody2D"]
+texture_filter = 1
+script = ExtResource("1_a2lml")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_o8qir")
+animation = &"splat"
+
+[node name="BounceArea" type="Area2D" parent="."]
+position = Vector2(-0.207455, -8.83507)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BounceArea"]
+position = Vector2(0.525505, 8.67646)
+shape = SubResource("RectangleShape2D_uom05")
+
+[node name="PainArea" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PainArea"]
+polygon = PackedVector2Array(-4.35577, 1.20801, -5.02319, 3.04341, -5.02319, 4.37825, -4.35577, 6.46394, -3.27121, 7.46507, 3.40299, 7.54849, 4.73783, 5.54624, 5.5721, 3.96111, 5.90581, 2.29256, 4.82125, 1.37486, 5.32182, 0.790869, 5.23839, -0.460545, 3.65327, -1.21139, -4.60605, -1.29482, -4.68948, -0.377115)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.0612115, 7.15628)
+shape = SubResource("RectangleShape2D_adfrr")
+
+[node name="DespawnTimer" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
+[connection signal="body_entered" from="BounceArea" to="." method="_on_bounce_area_body_entered"]
+[connection signal="body_entered" from="PainArea" to="." method="_on_pain_area_body_entered"]
+[connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]

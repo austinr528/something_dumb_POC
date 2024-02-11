@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://dymngx1hsdy8k"]
+
+[ext_resource type="Script" path="res://src/Character.gd" id="1_o61xr"]
+[ext_resource type="Script" path="res://src/CharLabel.gd" id="2_7ty36"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jxuhc"]
+radius = 6.125
+height = 31.875
+
+[node name="Character" type="CharacterBody2D"]
+script = ExtResource("1_o61xr")
+
+[node name="CharSprite" type="AnimatedSprite2D" parent="."]
+
+[node name="CharColShape" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_jxuhc")
+
+[node name="CharLabel" type="Label" parent="."]
+offset_left = -20.69
+offset_top = -42.7149
+offset_right = 19.31
+offset_bottom = -19.7149
+script = ExtResource("2_7ty36")
+
+[connection signal="animation_change" from="." to="CharLabel" method="_on_character_animation_change"]
