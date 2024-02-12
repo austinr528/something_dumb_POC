@@ -83,7 +83,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"belt",
-"speed": 6.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,

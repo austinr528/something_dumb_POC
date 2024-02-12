@@ -23,3 +23,6 @@ func bounced_on():
 	# be flat and no more interaction/movement
 	direction = 0
 
+func _on_pain_area_body_entered(body):
+	if body.has_method('take_damage'):
+		body.take_damage()

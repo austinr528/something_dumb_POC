@@ -44,3 +44,8 @@ func _on_attack_timer_timeout():
 	print("direction ", direction)
 	yoke.direction = direction
 	get_parent().add_child(yoke)
+
+
+func _on_pain_area_body_entered(body):
+	if body.has_method('take_damage'):
+		body.take_damage()

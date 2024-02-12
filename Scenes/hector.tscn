@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bwsrrnhmk5wp6"]
 
 [ext_resource type="PackedScene" uid="uid://cupebkngs7xpl" path="res://Scenes/character.tscn" id="1_btmwu"]
-[ext_resource type="SpriteFrames" uid="uid://lovxywgmi1cm" path="res://Assets/Hector/new_sprite_frames.tres" id="2_4h7s7"]
+[ext_resource type="SpriteFrames" uid="uid://bxpcyrilfjfgl" path="res://Assets/Hector/new_sprite_frames.tres" id="2_4h7s7"]
 [ext_resource type="Script" path="res://src/hector.gd" id="2_bglaj"]
 
 [node name="Hector" instance=ExtResource("1_btmwu")]
@@ -10,8 +10,8 @@ script = ExtResource("2_bglaj")
 
 [node name="CharSprite" parent="." index="0"]
 sprite_frames = ExtResource("2_4h7s7")
-animation = &"run"
-frame_progress = 0.390329
+animation = &"belt"
+frame_progress = 0.835896
 
 [node name="CharColShape" parent="." index="1"]
-position = Vector2(-0.397301, 3)
+position = Vector2(-0.794602, 1.14594)

@@ -2,6 +2,12 @@ extends "res://src/Character.gd"
 
 # 0 = not sliding, -1 = sliding left, 1 = sliding right
 var sliding = 0
+
+# vars for keeping track of attack and attack momentum
+var attacking = false
+var momentum = 0
+
+# vars for keeping track of damage flashing (60 frames basically)
 var damaged = false
 var damage_flicker_frames = 0
 
@@ -21,14 +27,14 @@ func _horizontal_movement(is_jump):
 	if sliding != 0:
 		horizontal_input = sliding
 	# horizontal velocity which moves player left or right based on input
-	velocity.x = horizontal_input * speed
+	velocity.x = horizontal_input * (speed + momentum)
 	# TODO: add some momentum, when we stop inputing a direction he should
 	# slide a bit more in the last direction especially if running
 	if running:
 		velocity.x *= 2
 
 	print(velocity.x)
-	if !is_jump:
+	if !is_jump && !attacking:
 		if is_walking(velocity.x):
 			$CharSprite.play('walk')
 			emit_signal('animation_change', 'walk')
@@ -72,8 +78,17 @@ func _physics_process(delta):
 	if !is_jumped && is_on_floor():
 		jumping = false
 		
-	_horizontal_movement(jumping)
-		
+	if Input.is_action_just_pressed('ui_attack'):
+		$CharSprite.play('belt')
+		emit_signal('animation_change', 'belt')
+		attacking = true
+	elif attacking && $CharSprite.get_frame() == 3:
+		attacking = false
+		momentum = 150
+	else:
+		if momentum > 0: momentum -= 5
+		_horizontal_movement(jumping)
+
 	# Determine the angle of the character
 	if is_on_floor():
 		var angle = get_floor_normal().angle()
@@ -93,7 +108,7 @@ func _physics_process(delta):
 	else:
 		sliding = 0
 
-		# orient the character to face the correct direction
+	# orient the character to face the correct direction
 	if direction > 0 :
 		$CharSprite.flip_h = false
 		last_dir_right = true
@@ -102,24 +117,27 @@ func _physics_process(delta):
 		last_dir_right = false
 		
 	if damaged && damage_flicker_frames < 60:
-		if damage_flicker_frames % 2 == 0:
-			print($CharSprite.get_sprite_frames().get_frame_texture($CharSprite.get_animation(), $CharSprite.get_frame()).has_alpha())
-			$CharSprite.get_sprite_frames().get_frame_texture($CharSprite.get_animation(), $CharSprite.get_frame())
-			$CharSprite.modulate.a = 255 / 2
+		damage_flicker_frames += 1
+		if damage_flicker_frames % 6 == 0:
+			$CharSprite.modulate = Color(1, 0.2, 0.2, .6)
+		else:
+			$CharSprite.modulate = Color(1, 1, 1, .4)
 	elif damaged:
 		damaged = false
 		damage_flicker_frames = 0
+		$CharSprite.modulate = Color(1, 1, 1, 1)
 		
+	
 		
-	# Determine the angle of the character
-	if is_on_floor():
-		var angle = get_floor_normal().angle()
-		
-		if angle != sprite_angle:
-			rotation = angle + (PI/2)
-			sprite_angle = rotation
-	else:
-		rotation = 0
+	## Determine the angle of the character
+	#if is_on_floor():
+		#var angle = get_floor_normal().angle()
+		#if angle != sprite_angle:
+			#rotation = angle + (PI/2)
+			#sprite_angle = rotation
+	#else:
+		#rotation = 0
+
 	#applies movement
 	move_and_slide()
 

@@ -19,13 +19,13 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y8y1q"]
-size = Vector2(18.8225, 3.46478)
+size = Vector2(16.0724, 3.46478)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lrx02"]
-radius = 14.168
+radius = 14.5122
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k2oy5"]
-size = Vector2(18.7413, 1.77027)
+size = Vector2(13.8898, 1.77027)
 
 [node name="YokeBaddie" type="CharacterBody2D"]
 texture_filter = 1
@@ -42,17 +42,17 @@ animation = &"walk"
 position = Vector2(-0.207455, -8.83507)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BounceArea"]
-position = Vector2(-0.255669, 0)
+position = Vector2(-0.800373, 0)
 shape = SubResource("RectangleShape2D_y8y1q")
 
 [node name="PainArea" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PainArea"]
-position = Vector2(-0.0424151, 5.0222)
+position = Vector2(0.0567975, 5.0222)
 shape = SubResource("CircleShape2D_lrx02")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.100078, 23.4456)
+position = Vector2(0.182724, 21.3621)
 shape = SubResource("RectangleShape2D_k2oy5")
 
 [node name="AttackTimer" type="Timer" parent="."]
@@ -60,4 +60,5 @@ wait_time = 3.0
 
 [connection signal="body_entered" from="BounceArea" to="." method="_on_bounce_area_body_entered"]
 [connection signal="body_shape_entered" from="BounceArea" to="." method="_on_bounce_area_body_shape_entered"]
+[connection signal="body_entered" from="PainArea" to="." method="_on_pain_area_body_entered"]
 [connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]

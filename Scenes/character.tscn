@@ -5,7 +5,7 @@
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jxuhc"]
 radius = 6.125
-height = 32.0
+height = 28.5611
 
 [node name="Character" type="CharacterBody2D"]
 script = ExtResource("1_o61xr")
@@ -13,6 +13,7 @@ script = ExtResource("1_o61xr")
 [node name="CharSprite" type="AnimatedSprite2D" parent="."]
 
 [node name="CharColShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.0787458)
 shape = SubResource("CapsuleShape2D_jxuhc")
 
 [node name="CharLabel" type="Label" parent="."]
