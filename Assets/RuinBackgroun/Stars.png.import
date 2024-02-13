@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1bhutcdfgr1e"
-path="res://.godot/imported/TreeBG.png-43791757c6fac9cf9b1ba56be68b3c57.ctex"
+uid="uid://djgm848npae5s"
+path="res://.godot/imported/Stars.png-0091f37f2992e287526d9136fa159e42.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/GrassGround/TreeBG.png"
-dest_files=["res://.godot/imported/TreeBG.png-43791757c6fac9cf9b1ba56be68b3c57.ctex"]
+source_file="res://Assets/RuinBackgroun/Stars.png"
+dest_files=["res://.godot/imported/Stars.png-0091f37f2992e287526d9136fa159e42.ctex"]
 
 [params]
 

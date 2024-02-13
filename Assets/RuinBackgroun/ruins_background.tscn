@@ -1,0 +1,123 @@
+[gd_scene load_steps=11 format=3 uid="uid://t4qok2bf280u"]
+
+[ext_resource type="Texture2D" uid="uid://cjy2i34iv6488" path="res://Assets/RuinBackgroun/NightSky.png" id="1_m0g0x"]
+[ext_resource type="Texture2D" uid="uid://cyfb3edml03wp" path="res://Assets/RuinBackgroun/TreeBG.png" id="2_ddtxv"]
+[ext_resource type="Texture2D" uid="uid://djgm848npae5s" path="res://Assets/RuinBackgroun/Stars.png" id="2_grssv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mp2fu"]
+atlas = ExtResource("1_m0g0x")
+region = Rect2(85, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a18n7"]
+atlas = ExtResource("1_m0g0x")
+region = Rect2(51, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kfj14"]
+atlas = ExtResource("1_m0g0x")
+region = Rect2(34, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_21yx7"]
+atlas = ExtResource("1_m0g0x")
+region = Rect2(17, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yxvjn"]
+atlas = ExtResource("1_m0g0x")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfwcp"]
+atlas = ExtResource("1_m0g0x")
+region = Rect2(68, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_s6wdv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mp2fu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mp2fu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a18n7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kfj14")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_21yx7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yxvjn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_21yx7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kfj14")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a18n7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pfwcp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mp2fu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[node name="RuinsBackground" type="ParallaxBackground"]
+scale = Vector2(2, 2)
+transform = Transform2D(2, 0, 0, 2, 0, 0)
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_scale = Vector2(0, 0)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ParallaxLayer"]
+z_index = 2
+position = Vector2(-166.534, 10.7401)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_s6wdv")
+frame_progress = 0.462154
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxLayer"]
+scale = Vector2(2.68419, 1.61451)
+texture = ExtResource("2_grssv")
+
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="ParallaxLayer"]
+z_index = 2
+position = Vector2(98.4659, 32.7401)
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_s6wdv")
+frame_progress = 0.176563
+
+[node name="AnimatedSprite2D3" type="AnimatedSprite2D" parent="ParallaxLayer"]
+z_index = 2
+position = Vector2(-48.5329, -8.13741)
+scale = Vector2(2.052, 2)
+sprite_frames = SubResource("SpriteFrames_s6wdv")
+frame_progress = 0.579641
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="."]
+texture_filter = 1
+motion_scale = Vector2(0.6, 0.6)
+motion_mirroring = Vector2(412, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxLayer2"]
+position = Vector2(-495.846, 138.165)
+scale = Vector2(1, 1.7)
+texture = ExtResource("2_ddtxv")
+
+[node name="Sprite2D2" type="Sprite2D" parent="ParallaxLayer2"]
+position = Vector2(-83.8815, 139.283)
+scale = Vector2(1, 1.7)
+texture = ExtResource("2_ddtxv")
+
+[node name="Sprite2D3" type="Sprite2D" parent="ParallaxLayer2"]
+position = Vector2(327.415, 140.199)
+scale = Vector2(1, 1.7)
+texture = ExtResource("2_ddtxv")
