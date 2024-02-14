@@ -35,9 +35,6 @@ animations = [{
 "texture": SubResource("AtlasTexture_mp2fu")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mp2fu")
-}, {
-"duration": 1.0,
 "texture": SubResource("AtlasTexture_a18n7")
 }, {
 "duration": 1.0,
@@ -82,25 +79,44 @@ z_index = 2
 position = Vector2(-166.534, 10.7401)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_s6wdv")
-frame_progress = 0.462154
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxLayer"]
-scale = Vector2(2.68419, 1.61451)
-texture = ExtResource("2_grssv")
+autoplay = "default"
+frame_progress = 0.203933
 
 [node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="ParallaxLayer"]
 z_index = 2
 position = Vector2(98.4659, 32.7401)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_s6wdv")
-frame_progress = 0.176563
+autoplay = "default"
+frame_progress = 0.402654
 
 [node name="AnimatedSprite2D3" type="AnimatedSprite2D" parent="ParallaxLayer"]
 z_index = 2
 position = Vector2(-48.5329, -8.13741)
 scale = Vector2(2.052, 2)
 sprite_frames = SubResource("SpriteFrames_s6wdv")
-frame_progress = 0.579641
+autoplay = "default"
+frame_progress = 0.655413
+
+[node name="AnimatedSprite2D4" type="AnimatedSprite2D" parent="ParallaxLayer"]
+z_index = 2
+position = Vector2(238.217, -63.2318)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_s6wdv")
+autoplay = "default"
+frame_progress = 0.886439
+
+[node name="AnimatedSprite2D5" type="AnimatedSprite2D" parent="ParallaxLayer"]
+z_index = 2
+position = Vector2(-447.955, -14.4598)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_s6wdv")
+autoplay = "default"
+frame_progress = 0.196557
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxLayer"]
+scale = Vector2(2.68419, 1.61451)
+texture = ExtResource("2_grssv")
 
 [node name="ParallaxLayer2" type="ParallaxLayer" parent="."]
 texture_filter = 1
