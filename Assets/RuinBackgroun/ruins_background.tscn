@@ -80,7 +80,7 @@ position = Vector2(-166.534, 10.7401)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_s6wdv")
 autoplay = "default"
-frame_progress = 0.203933
+frame_progress = 0.912395
 
 [node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="ParallaxLayer"]
 z_index = 2
@@ -88,7 +88,7 @@ position = Vector2(98.4659, 32.7401)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_s6wdv")
 autoplay = "default"
-frame_progress = 0.402654
+frame_progress = 0.111117
 
 [node name="AnimatedSprite2D3" type="AnimatedSprite2D" parent="ParallaxLayer"]
 z_index = 2
@@ -96,7 +96,7 @@ position = Vector2(-48.5329, -8.13741)
 scale = Vector2(2.052, 2)
 sprite_frames = SubResource("SpriteFrames_s6wdv")
 autoplay = "default"
-frame_progress = 0.655413
+frame_progress = 0.363925
 
 [node name="AnimatedSprite2D4" type="AnimatedSprite2D" parent="ParallaxLayer"]
 z_index = 2
@@ -104,7 +104,7 @@ position = Vector2(238.217, -63.2318)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_s6wdv")
 autoplay = "default"
-frame_progress = 0.886439
+frame_progress = 0.594938
 
 [node name="AnimatedSprite2D5" type="AnimatedSprite2D" parent="ParallaxLayer"]
 z_index = 2
@@ -112,7 +112,7 @@ position = Vector2(-447.955, -14.4598)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_s6wdv")
 autoplay = "default"
-frame_progress = 0.196557
+frame_progress = 0.904736
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxLayer"]
 scale = Vector2(2.68419, 1.61451)

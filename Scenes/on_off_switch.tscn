@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3 uid="uid://b7x4mjt8ifsqf"]
+
+[ext_resource type="Script" path="res://src/OnOffSwitch.gd" id="1_bpqus"]
+[ext_resource type="Texture2D" uid="uid://bmjeiu20nn8ye" path="res://Assets/OnOffBlock/OnOffblk.png" id="2_5ya6u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vdwjc"]
+atlas = ExtResource("2_5ya6u")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xjolu"]
+atlas = ExtResource("2_5ya6u")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c187y"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vdwjc")
+}],
+"loop": true,
+"name": &"off",
+"speed": 0.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xjolu")
+}],
+"loop": true,
+"name": &"on",
+"speed": 0.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wabk7"]
+radius = 4.99725
+height = 19.2702
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jsk8h"]
+radius = 4.10534
+height = 16.5945
+
+[node name="OnOffSwitch" type="AnimatableBody2D"]
+texture_filter = 1
+script = ExtResource("1_bpqus")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_c187y")
+animation = &"off"
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(1.93246, 0.148653)
+shape = SubResource("CapsuleShape2D_wabk7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2.37841, 0.148651)
+shape = SubResource("CapsuleShape2D_jsk8h")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

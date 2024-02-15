@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://mtvo73itg2ng"]
+[gd_scene load_steps=12 format=3 uid="uid://mtvo73itg2ng"]
 
 [ext_resource type="TileSet" uid="uid://bgtxasewjv8jh" path="res://Assets/GrassGround/GrassGroundTileSet.tres" id="1_4bwqe"]
 [ext_resource type="Texture2D" uid="uid://6m7d1ox7prcm" path="res://Assets/GrassGround/newTiles.png" id="3_otsof"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://biq6gmb57o5bj" path="res://Scenes/yokey_baddie.tscn" id="6_vi5k2"]
 [ext_resource type="PackedScene" uid="uid://cyvtigla5q6ou" path="res://Scenes/boxy_baddie.tscn" id="6_wxxt5"]
 [ext_resource type="PackedScene" uid="uid://t4qok2bf280u" path="res://Assets/RuinBackgroun/ruins_background.tscn" id="7_sno83"]
+[ext_resource type="PackedScene" uid="uid://b7x4mjt8ifsqf" path="res://Scenes/on_off_switch.tscn" id="8_2pgni"]
+[ext_resource type="PackedScene" uid="uid://dumkhkkvxx457" path="res://Scenes/on_off_block.tscn" id="9_njyq4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uukpm"]
 texture = ExtResource("3_otsof")
@@ -269,3 +271,31 @@ position = Vector2(279.819, 38.3252)
 offset = Vector2(500, 350)
 scale = Vector2(1, 1)
 transform = Transform2D(1, 0, 0, 1, 500, 350)
+
+[node name="OnOffSwitch" parent="." instance=ExtResource("8_2pgni")]
+position = Vector2(649.316, -230.476)
+scale = Vector2(2, 2)
+
+[node name="OnOffBlock" parent="." instance=ExtResource("9_njyq4")]
+position = Vector2(720.131, -367.331)
+scale = Vector2(2, 2)
+
+[node name="OnOffBlock2" parent="." instance=ExtResource("9_njyq4")]
+position = Vector2(720.12, -335.255)
+scale = Vector2(2, 2)
+
+[node name="OnOffBlock3" parent="." instance=ExtResource("9_njyq4")]
+position = Vector2(720.113, -271.222)
+scale = Vector2(2, 2)
+
+[node name="OnOffBlock4" parent="." instance=ExtResource("9_njyq4")]
+position = Vector2(720.216, -303.237)
+scale = Vector2(2, 2)
+
+[node name="OnOffBlock5" parent="." instance=ExtResource("9_njyq4")]
+position = Vector2(719.536, -209.254)
+scale = Vector2(2, 2)
+
+[node name="OnOffBlock7" parent="." instance=ExtResource("9_njyq4")]
+position = Vector2(719.877, -239.227)
+scale = Vector2(2, 2)
