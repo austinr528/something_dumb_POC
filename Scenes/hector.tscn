@@ -10,7 +10,7 @@ script = ExtResource("2_bglaj")
 
 [node name="CharSprite" parent="." index="0"]
 sprite_frames = ExtResource("2_4h7s7")
-animation = &"belt"
+animation = &"attack"
 
 [node name="CharColShape" parent="." index="1"]
 position = Vector2(-0.794602, 1.14594)

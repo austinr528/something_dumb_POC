@@ -1,10 +1,11 @@
 extends CharacterBody2D
 
-@export var speed = 100
-@export var gravity = 600
-@export var jump = -300
+var DEBUG = true
+var speed = 100
+var gravity = 600
+var jump = -300
 
-var last_dir_right = true
+var last_dir = 1
 # positive means right negitive means left
 var direction = 0
 var jumping = false
@@ -14,7 +15,14 @@ var running = false
 
 signal animation_change(animation)
 
-func _horizontal_movement(is_jump):
+enum AnimationState { default, walk, run, slide, jump_up, jump_down, attack, }
+
+func _set_animation(anim_state: AnimationState):
+	var anim = AnimationState.keys()[anim_state]
+	$CharSprite.play(anim)
+	if DEBUG: emit_signal('animation_change', anim)
+
+func _horizontal_movement(delta: float):
 	pass
 
 func _normalize_movement_to_slope():
