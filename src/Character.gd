@@ -9,7 +9,6 @@ var last_dir = 1
 # positive means right negitive means left
 var direction = 0
 var jumping = false
-var curr_jump_pos = 0
 var sprite_angle = 0.0
 var running = false
 
@@ -22,18 +21,21 @@ func _set_animation(anim_state: AnimationState):
 	$CharSprite.play(anim)
 	if DEBUG: emit_signal('animation_change', anim)
 
+func _jump() -> float:
+	push_error("_jump() method must be overriden")
+	return 0.0
+	
 func _horizontal_movement(delta: float):
-	pass
+	push_error("_horizontal_movement() method must be overriden")
 
 func _normalize_movement_to_slope():
-	pass
+	push_error("_normalize_movement_to_slope() method must be overriden")
 	# maybe delete
 
 func take_damage():
-	pass
+	push_error("take_damage() method must be overriden")
 
 func bounce_on_box():
 	print('bounce on BOX foo')
-	jumping = true
-	curr_jump_pos = position.y
-	velocity.y = jump
+	jumping = false
+	velocity.y = _jump()

@@ -9,7 +9,9 @@ var RUN_VEL_MULT = 2.5
 var FALLING_VEL_STEP = 10
 var TOP_SPEED = 10
 var ACC_RATE = 9
-var ATTACK_VEL_STEP = 200
+var ATTACK_VEL_STEP = 400
+# The movement speed that determins when a skid stops
+var SKID_STOP_VEL = 20
 
 # vars for keeping track of attack and attack momentum
 var attacking = false
@@ -21,6 +23,19 @@ var damaged = false
 var damage_flicker_frames = 0
 var anim_state = AnimationState.default
 
+var jump_height: float = 100
+var jump_time_to_peak: float = 0.5
+var jump_time_to_descent: float = 0.4
+
+var jump_velocity: float = ((2.0 * jump_height) / jump_time_to_peak) * -1.0
+var jump_gravity: float = ((-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)) * -1.0
+var fall_gravity: float = ((-2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)) * -1.0
+
+func _get_gravity() -> float:
+	return jump_gravity if velocity.y < 0.0 else fall_gravity
+
+func _jump() -> float:
+	return jump_velocity
 
 func is_walking(x_vel):
 	if x_vel == 0: return false
@@ -46,45 +61,39 @@ func slide_hector():
 		sliding = 0
 
 func jump_hector(delta: float):
+	# TODO: if jump is pressed for more than x frames high jump
+	# TODO: if jump is held fall slower no matter if falling from jump or walking
+	#       off ledge
 	var is_jumped := Input.is_action_just_pressed("ui_jump")
 	# vertical movement velocity (down)
-	velocity.y += (gravity * delta) + vertical_attack_momentum 
+	velocity.y += (_get_gravity() * delta) + vertical_attack_momentum 
 	if is_jumped && !jumping:
 		jumping = true
-		curr_jump_pos = position.y
-		velocity.y = jump
+		velocity.y = _jump()
 
-	if jumping && curr_jump_pos > position.y:
-		curr_jump_pos = position.y
+	if jumping && velocity.y < 0.0:
 		anim_state = AnimationState.jump_up
 	elif jumping:
-		# TODO: There is probably a better more mathy way to do this
-		velocity.y += FALLING_VEL_STEP
 		anim_state = AnimationState.jump_down
 	
 	if !is_jumped && is_on_floor():
 		jumping = false
 		
 func _get_max_spd() -> int:
-	var max_spd = speed
-	if running:
-		max_spd = speed * RUN_VEL_MULT
-	return max_spd
+	return (speed * RUN_VEL_MULT) if running else speed
 
 # Returns true if we are turning, false otherwise
 func _set_move_spd(horizontal_input: int):
 	var acceloration = 0
 	var max_spd = _get_max_spd()
 	if direction == horizontal_input and horizontal_input != 0:
-		#if !running && move_spd >= 100:
-			#pass
 		acceloration = (max_spd - move_spd) / ACC_RATE
 	elif turning || direction != horizontal_input and horizontal_input != 0:
 		print('turning accel: {acc} move speed: {ms}'.format({ 'acc': acceloration, 'ms': move_spd }))
 		horizontal_input = last_dir
 		acceloration = -1 * (move_spd / ACC_RATE * 2)
 		turning = true
-		if move_spd < 20:
+		if move_spd < SKID_STOP_VEL:
 			turning = false
 	else:
 		acceloration = -1 * (move_spd / ACC_RATE)
@@ -100,6 +109,9 @@ func _horizontal_movement(delta: float):
 	# Sets the property move_spd
 	_set_move_spd(horizontal_input)
 	
+	# Make sure we skid the same direction we went last, basically we need
+	# to continue moving in the "wrong" direction for a few frames
+	# this is set and unset by `_set_move_spd`
 	if turning: horizontal_input = last_dir
 	
 	direction = horizontal_input
@@ -126,10 +138,9 @@ func _normalize_movement_to_slope():
 
 #movement and physics
 func _physics_process(delta: float):
-	# TODO: do we want a short jump and a higher jump (determined by how long the
-	# button is held?
 	jump_hector(delta)
-		
+
+	# For now attack prevents/cancels jump
 	if Input.is_action_just_pressed('ui_attack'):
 		anim_state = AnimationState.attack
 		attacking = true
@@ -148,8 +159,10 @@ func _physics_process(delta: float):
 		if vertical_attack_momentum != 0:
 			vertical_attack_momentum /= (ACC_RATE * 3)
 
+	# we check that we aren't jumping or attacking
 	_horizontal_movement(delta)
 
+	# We want sliding to overwrite all other animation states
 	slide_hector()
 	
 	# Set the animation based on physics
