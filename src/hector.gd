@@ -4,6 +4,7 @@ extends "res://src/Character.gd"
 var sliding = 0
 var move_spd = 0
 var turning = false
+var ducking = false
 
 var RUN_VEL_MULT = 2.5
 var FALLING_VEL_STEP = 10
@@ -12,6 +13,8 @@ var ACC_RATE = 9
 var ATTACK_VEL_STEP = 400
 # The movement speed that determins when a skid stops
 var SKID_STOP_VEL = 20
+# The proportion ducking slows your x velocity
+var DUCK_VEL_DIV = 4
 
 # vars for keeping track of attack and attack momentum
 var attacking = false
@@ -82,7 +85,8 @@ func jump_hector(delta: float):
 func _get_max_spd() -> int:
 	return (speed * RUN_VEL_MULT) if running else speed
 
-# Returns true if we are turning, false otherwise
+# Sets the movement speed which is used for velocity, also sets turning to true
+# when we change direction
 func _set_move_spd(horizontal_input: int):
 	var acceloration = 0
 	var max_spd = _get_max_spd()
@@ -112,7 +116,8 @@ func _horizontal_movement(delta: float):
 	# Make sure we skid the same direction we went last, basically we need
 	# to continue moving in the "wrong" direction for a few frames
 	# this is set and unset by `_set_move_spd`
-	if turning: horizontal_input = last_dir
+	if turning:
+		horizontal_input = last_dir
 	
 	direction = horizontal_input
 	if sliding != 0:
@@ -138,16 +143,19 @@ func _normalize_movement_to_slope():
 
 #movement and physics
 func _physics_process(delta: float):
-	jump_hector(delta)
+	var frame = 0
 
+	jump_hector(delta)
+	var vert_input = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
 	# For now attack prevents/cancels jump
 	if Input.is_action_just_pressed('ui_attack'):
 		anim_state = AnimationState.attack
 		attacking = true
 	elif attacking && $CharSprite.get_frame() == 3:
 		var horiz_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
-		var vert_input = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
+		
 		print('horizontal: {h} vertical: {v} last_dir: {d}'.format({ 'h': horiz_input, 'v': vert_input, 'd': last_dir }))
+
 		if horiz_input != 0:
 			horizontal_attack_momentum = horiz_input * ATTACK_VEL_STEP
 		if vert_input != 0:
@@ -159,14 +167,39 @@ func _physics_process(delta: float):
 		if vertical_attack_momentum != 0:
 			vertical_attack_momentum /= (ACC_RATE * 3)
 
-	# we check that we aren't jumping or attacking
+	# we check that we aren't jumping or attacking in _horizontal_movement
 	_horizontal_movement(delta)
+	
+	# we need to reset the animation state to turning so it overrides
+	# default/walk/run
+	if turning:
+		anim_state = AnimationState.turn
+
+	print('ducking: {d} frame: {f} vert: {v}'.format({
+		'd': ducking, 'f': $CharSprite.get_frame(), 'v': vert_input
+	}))
+	# TODO: this is not great, it should be a bit more state machine-y
+	#
+	# We start ducking, play the duck_down animation
+	if vert_input < 0 && !attacking && is_on_floor():
+		ducking = true
+		anim_state = AnimationState.duck_down
+		velocity.x /= DUCK_VEL_DIV
+	# we are still ducking just play the last frame over and over
+	elif ducking && vert_input < 0 && $CharSprite.get_frame() == 2:
+		frame = 2
+	# we are getting up from ducking lay duck_up
+	elif ducking && vert_input >= 0:
+		anim_state = AnimationState.duck_up
+		# The duck up animation is done we can now be whatever
+		if $CharSprite.get_frame() == 2:
+			ducking = false
 
 	# We want sliding to overwrite all other animation states
 	slide_hector()
 	
 	# Set the animation based on physics
-	_set_animation(anim_state)
+	_set_animation(anim_state, frame)
 
 	# orient the character to face the correct direction
 	if direction > 0 :

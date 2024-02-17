@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=18 format=3 uid="uid://bxpcyrilfjfgl"]
+[gd_resource type="SpriteFrames" load_steps=22 format=3 uid="uid://bxpcyrilfjfgl"]
 
 [ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="1_jkb5t"]
 
@@ -34,6 +34,18 @@ region = Rect2(36, 0, 17, 32)
 atlas = ExtResource("1_jkb5t")
 region = Rect2(54, 0, 17, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_3pbkg"]
+atlas = ExtResource("1_jkb5t")
+region = Rect2(0, 0, 18, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sk1pd"]
+atlas = ExtResource("1_jkb5t")
+region = Rect2(0, 193, 18, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m3mrf"]
+atlas = ExtResource("1_jkb5t")
+region = Rect2(19, 193, 18, 25)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_45fe5"]
 atlas = ExtResource("1_jkb5t")
 region = Rect2(24, 66, 23, 33)
@@ -57,6 +69,10 @@ region = Rect2(0, 161, 21, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_71mvo"]
 atlas = ExtResource("1_jkb5t")
 region = Rect2(0, 97, 21, 31)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mjadc"]
+atlas = ExtResource("1_jkb5t")
+region = Rect2(0, 252, 18, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_61ugm"]
 atlas = ExtResource("1_jkb5t")
@@ -107,6 +123,34 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_3pbkg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sk1pd")
+}, {
+"duration": 10.0,
+"texture": SubResource("AtlasTexture_m3mrf")
+}],
+"loop": true,
+"name": &"duck_down",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m3mrf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sk1pd")
+}, {
+"duration": 10.0,
+"texture": SubResource("AtlasTexture_3pbkg")
+}],
+"loop": true,
+"name": &"duck_up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_45fe5")
 }],
 "loop": true,
@@ -141,6 +185,14 @@ animations = [{
 }],
 "loop": true,
 "name": &"slide",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mjadc")
+}],
+"loop": true,
+"name": &"turn",
 "speed": 5.0
 }, {
 "frames": [{

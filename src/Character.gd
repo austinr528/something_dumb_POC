@@ -14,9 +14,16 @@ var running = false
 
 signal animation_change(animation)
 
-enum AnimationState { default, walk, run, slide, jump_up, jump_down, attack, }
+enum AnimationState {
+	default, walk, run,
+	turn,
+	slide,
+	jump_up, jump_down,
+	attack, # will have all 4 directions :( sad
+	duck_down, duck_up,
+}
 
-func _set_animation(anim_state: AnimationState):
+func _set_animation(anim_state: AnimationState, frame: int = 0):
 	var anim = AnimationState.keys()[anim_state]
 	$CharSprite.play(anim)
 	if DEBUG: emit_signal('animation_change', anim)
