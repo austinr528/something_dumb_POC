@@ -34,6 +34,9 @@ var jump_velocity: float = ((2.0 * jump_height) / jump_time_to_peak) * -1.0
 var jump_gravity: float = ((-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)) * -1.0
 var fall_gravity: float = ((-2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)) * -1.0
 
+const TURN_DUST = preload("res://Scenes/turn_dust_cloud.tscn")
+var dust_arr: Array = []
+
 func _get_gravity() -> float:
 	return jump_gravity if velocity.y < 0.0 else fall_gravity
 
@@ -173,7 +176,22 @@ func _physics_process(delta: float):
 	# we need to reset the animation state to turning so it overrides
 	# default/walk/run
 	if turning:
+		# TODO: we do this a lot which doesn't look terrible (maybe)
+		var dust = TURN_DUST.instantiate()
+		dust.global_position.y = (global_position.y +
+			($CharSprite.get_sprite_frames().get_frame_texture('walk', 0).get_height() - 3))
+		dust.global_position.x = global_position.x
+		get_parent().add_child(dust)
+		dust_arr.push_back(dust)
+		# Finaly set the anim_state (mostly this comment is to visually distinguish since no shit)
 		anim_state = AnimationState.turn
+
+	# once animation is done delete
+	for d in dust_arr:
+		if !d.is_playing():
+			# TODO: The is exactly what you shouldn't do in a for loop...
+			dust_arr.erase(d)
+			d.queue_free()
 
 	print('ducking: {d} frame: {f} vert: {v}'.format({
 		'd': ducking, 'f': $CharSprite.get_frame(), 'v': vert_input

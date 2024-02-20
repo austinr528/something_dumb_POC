@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://ejc2o0tswt4n"]
+
+[ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="1_hgwiq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_757wh"]
+atlas = ExtResource("1_hgwiq")
+region = Rect2(0, 286, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ml8nn"]
+atlas = ExtResource("1_hgwiq")
+region = Rect2(32, 286, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v5jh3"]
+atlas = ExtResource("1_hgwiq")
+region = Rect2(64, 286, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q8ixq"]
+atlas = ExtResource("1_hgwiq")
+region = Rect2(96, 286, 32, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d2uvu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_757wh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ml8nn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v5jh3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q8ixq")
+}],
+"loop": false,
+"name": &"default",
+"speed": 7.0
+}]
+
+[node name="TurnDustCloud" type="AnimatedSprite2D"]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_d2uvu")
+autoplay = "default"
+frame_progress = 0.707832
