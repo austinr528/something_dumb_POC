@@ -21,5 +21,5 @@ func _physics_process(delta):
 func _on_area_2d_2_body_entered(body):
 	# This logic checks that the platform has not fallen, the body is standing on something, and that the time is stopped.
 	# The second clause may be too vague but we can cross that bridge if we ever get to it.
-	if !fallen && $PlatTimer.is_stopped() && body.is_on_floor():
+	if !fallen && $PlatTimer.is_stopped() && body != null && body.is_on_floor():
 		$PlatTimer.start()

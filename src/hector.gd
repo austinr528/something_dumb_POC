@@ -238,9 +238,15 @@ func _physics_process(delta: float):
 		damage_flicker_frames = 0
 		$CharSprite.modulate = Color(1, 1, 1, 1)
 
-	#applies movement
-	move_and_slide()
-
+	#applies movement and also check if touched something that damges
+	if move_and_slide():
+		# This is another option, instead of signals and sprites
+		# (a tileMap can't use signals or Area2D's)
+		for i in range(get_slide_collision_count()):
+			var collision: KinematicCollision2D = get_slide_collision(i)
+			var n: String = collision.get_collider().name
+			if n.contains('Spike'):
+				damaged = true
 
 # Signal handlers
 #
