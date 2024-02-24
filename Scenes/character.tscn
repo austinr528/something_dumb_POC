@@ -23,4 +23,7 @@ offset_right = 19.31
 offset_bottom = -19.7149
 script = ExtResource("2_7ty36")
 
+[node name="CharAudioPlayer" type="AudioStreamPlayer2D" parent="."]
+
 [connection signal="animation_change" from="." to="CharLabel" method="_on_character_animation_change"]
+[connection signal="finished" from="CharAudioPlayer" to="." method="_on_char_audio_player_finished"]

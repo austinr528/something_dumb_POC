@@ -46,9 +46,9 @@ func _jump() -> float:
 func is_walking(x_vel):
 	if x_vel == 0: return false
 	if x_vel > 0:
-		return x_vel < 109
+		return x_vel < 100 + ACC_RATE
 	else:
-		return x_vel > -109
+		return x_vel > -100 - ACC_RATE
 
 func slide_hector():
 	if is_on_floor():
@@ -74,6 +74,7 @@ func jump_hector(delta: float):
 	# vertical movement velocity (down)
 	velocity.y += (_get_gravity() * delta) + vertical_attack_momentum 
 	if is_jumped && !jumping:
+		_set_audio(AudioState.jump)
 		jumping = true
 		velocity.y = _jump()
 
@@ -84,7 +85,8 @@ func jump_hector(delta: float):
 	
 	if !is_jumped && is_on_floor():
 		jumping = false
-		
+
+
 func _get_max_spd() -> int:
 	return (speed * RUN_VEL_MULT) if running else speed
 
@@ -99,7 +101,8 @@ func _set_move_spd(horizontal_input: int):
 		print('turning accel: {acc} move speed: {ms}'.format({ 'acc': acceloration, 'ms': move_spd }))
 		horizontal_input = last_dir
 		acceloration = -1 * (move_spd / ACC_RATE * 2)
-		turning = true
+		# We show the turn animation if we are not jumping/falling
+		turning = true && is_on_floor()
 		if move_spd < SKID_STOP_VEL:
 			turning = false
 	else:
@@ -107,6 +110,7 @@ func _set_move_spd(horizontal_input: int):
 	move_spd += acceloration
 	if move_spd < ACC_RATE:
 		move_spd = 0
+	print('move speed: {rr} acc: {rd}'.format({ 'rr': move_spd, 'rd': acceloration, }))
 
 func _horizontal_movement(delta: float):
 	running = Input.is_action_pressed("ui_run")
@@ -149,21 +153,27 @@ func _physics_process(delta: float):
 	var frame = 0
 
 	jump_hector(delta)
+
 	var vert_input = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
 	# For now attack prevents/cancels jump
 	if Input.is_action_just_pressed('ui_attack'):
+		_set_audio(AudioState.attack)
 		anim_state = AnimationState.attack
 		attacking = true
-	elif attacking && $CharSprite.get_frame() == 3:
+	elif attacking && (
+		($CharSprite.get_animation() == 'attack' && $CharSprite.get_frame() == 3)
+		|| $CharSprite.get_animation() != 'attack'
+		|| true
+	):
+		attacking = false
 		var horiz_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
-		
+
 		print('horizontal: {h} vertical: {v} last_dir: {d}'.format({ 'h': horiz_input, 'v': vert_input, 'd': last_dir }))
 
 		if horiz_input != 0:
 			horizontal_attack_momentum = horiz_input * ATTACK_VEL_STEP
 		if vert_input != 0:
 			vertical_attack_momentum = vert_input * ATTACK_VEL_STEP
-		attacking = false
 	else:
 		if horizontal_attack_momentum != 0:
 			horizontal_attack_momentum /= (ACC_RATE * 3)
@@ -174,7 +184,7 @@ func _physics_process(delta: float):
 	_horizontal_movement(delta)
 	
 	# we need to reset the animation state to turning so it overrides
-	# default/walk/run
+	# default/walk/run... could maybe do this in _horizontal_movement at the end
 	if turning:
 		# TODO: we do this a lot which doesn't look terrible (maybe)
 		var dust = TURN_DUST.instantiate()
@@ -185,7 +195,10 @@ func _physics_process(delta: float):
 		dust_arr.push_back(dust)
 		# Finaly set the anim_state (mostly this comment is to visually distinguish since no shit)
 		anim_state = AnimationState.turn
-
+		# TODO: this fixes a bug where if you attacked then turned (maybe jumped)
+		# you would could stick attacking to forever be true and you could lock in any animation
+		# shorter than 3 frames (also using a specific frame and not an animation done signal is shitty)
+		attacking = false
 	# once animation is done delete
 	for d in dust_arr:
 		if !d.is_playing():
@@ -193,9 +206,6 @@ func _physics_process(delta: float):
 			dust_arr.erase(d)
 			d.queue_free()
 
-	print('ducking: {d} frame: {f} vert: {v}'.format({
-		'd': ducking, 'f': $CharSprite.get_frame(), 'v': vert_input
-	}))
 	# TODO: this is not great, it should be a bit more state machine-y
 	#
 	# We start ducking, play the duck_down animation
@@ -226,7 +236,8 @@ func _physics_process(delta: float):
 	elif direction < 0:
 		$CharSprite.flip_h = true
 		last_dir = -1
-		
+
+	# This could also be done with a shader on the CharSprite I think
 	if damaged && damage_flicker_frames < 60:
 		damage_flicker_frames += 1
 		if damage_flicker_frames % 6 == 0:
