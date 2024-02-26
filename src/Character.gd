@@ -1,9 +1,9 @@
 extends CharacterBody2D
 
 var DEBUG = true
-var speed = 100
-var gravity = 600
-var jump = -300
+var SPEED = 100
+var GRAVITY = 600
+var JUMP = -300
 
 var last_dir = 1
 # positive means right negitive means left

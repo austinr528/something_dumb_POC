@@ -1,13 +1,10 @@
 # TODO
 
-- When jumping or falling player rotation should be none
 - still a few gotcha pixes (DEVIN GET YOUR SHIT TOGETHER) (not true anymore? 2/10/24)
-- sliding animation
+- sliding animation (partly done 2/24/24)
 - interfaces/inheritance
-- Death blocks?
-- add some momentum, when we stop inputing a direction he should slide a bit more in the
+- Death blocks? (got a few 2/24/24)
+- add some momentum, when we stop inputing a direction he should slide a bit more in the (this is pretty good as of 2/24/24)
   last direction especially if running
-- fall even faster, the jump up is ok but the falling needs to happen quicker,
-  the transition from 0 y velocity to X needs a bump
 - Add low jump and high jump dependent on how long pressed
-- running should have more ramp up time (time to full speed)
+- running should have more ramp up time (time to full speed) (I still think this 2/24/24)

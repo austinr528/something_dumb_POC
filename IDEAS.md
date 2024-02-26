@@ -38,6 +38,9 @@
     - Pig cannon guy (todo)
     - Yoke guy
     - Box guy
+    - flying/swooping
+    - plant-ish enemy
+    - robot maybe (eh not sure how I feel about this)
 
 ## Animations
     - Slide animation his hat comes off and grabs it
