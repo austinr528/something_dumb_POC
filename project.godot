@@ -15,6 +15,10 @@ run/main_scene="res://Scenes/d_play_ground.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.png"
 
+[autoload]
+
+Global="*res://src/Global.gd"
+
 [input]
 
 ui_left={

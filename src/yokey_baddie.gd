@@ -12,7 +12,7 @@ func timer_process():
 	if $AttackTimer.is_stopped(): 
 			$AttackTimer.start()
 
-func is_on_screen():
+func is_on_screen() -> bool:
 	return $AnimatedSprite2D/VisibleOnScreenEnabler2D.is_on_screen()
 
 func animation_process():
@@ -22,6 +22,9 @@ func animation_process():
 		$AnimatedSprite2D.flip_h = true
 
 func bounced_on(): pass
+
+func flip_ray():
+	$Direction.scale.x = -$Direction.scale.x
 
 func _on_attack_timer_timeout():
 	var yoke = YOKE.instantiate()

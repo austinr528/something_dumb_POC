@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://cwtv05flf441j"]
+[gd_scene load_steps=3 format=3 uid="uid://cwtv05flf441j"]
 
 [ext_resource type="Script" path="res://src/BounceEnemy.gd" id="1_wet7y"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6vwvq"]
 
 [node name="BounceEnemy" type="CharacterBody2D"]
 script = ExtResource("1_wet7y")
@@ -18,5 +20,12 @@ script = ExtResource("1_wet7y")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PainArea"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="Direction" type="Node2D" parent="."]
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_6vwvq")
+
+[node name="OnEdgeRay" type="RayCast2D" parent="Direction"]
+position = Vector2(10.2569, 0.0743256)
 
 [connection signal="body_entered" from="BounceArea" to="." method="_on_bounce_area_body_entered"]

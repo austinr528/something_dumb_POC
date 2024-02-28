@@ -20,7 +20,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ddw3d"]
-size = Vector2(20, 2.86507)
+size = Vector2(20, 6.60712)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ah14w"]
 radius = 15.4394
@@ -38,7 +38,7 @@ sprite_frames = SubResource("SpriteFrames_o65ja")
 animation = &"walk"
 
 [node name="CollisionShape2D" parent="BounceArea" index="0"]
-position = Vector2(-0.374573, -12.8751)
+position = Vector2(-0.374573, -14.0555)
 shape = SubResource("RectangleShape2D_ddw3d")
 
 [node name="CollisionShape2D" parent="PainArea" index="0"]
@@ -51,5 +51,11 @@ shape = SubResource("RectangleShape2D_d0go7")
 
 [node name="AttackTimer" type="Timer" parent="." index="4"]
 wait_time = 3.0
+
+[node name="Direction" parent="." index="5"]
+show_behind_parent = false
+
+[node name="OnEdgeRay" parent="Direction" index="0"]
+position = Vector2(14.7461, 5.09598)
 
 [connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]

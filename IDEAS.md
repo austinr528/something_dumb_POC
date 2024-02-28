@@ -46,5 +46,18 @@
     - Slide animation his hat comes off and grabs it
     - Fall animation hat could separate from body
 
+## Maybe Godot Does Not Suck
 
+In some base class
+```
+func _init():
+    add_to_group('BounceEnemy')
+```
+Then anywhere we can do this
+```
+func _on_player_spotted():
+    # where `enter_alert_mode` is a method that `BounceEnemy`s have
+    get_tree().call_group("BounceEnemy", "enter_alert_mode")
+
+```
 

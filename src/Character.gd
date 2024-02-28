@@ -1,6 +1,5 @@
 extends CharacterBody2D
 
-var DEBUG = true
 var SPEED = 100
 var GRAVITY = 600
 var JUMP = -300
@@ -39,7 +38,7 @@ enum AnimationState {
 func _set_animation(anim_state: AnimationState, frame: int = 0):
 	var anim = AnimationState.keys()[anim_state]
 	$CharSprite.play(anim)
-	if DEBUG: emit_signal('animation_change', anim)
+	if Global.DEBUG: emit_signal('animation_change', anim)
 
 
 func _set_audio(audio: AudioState):
@@ -71,7 +70,18 @@ func _normalize_movement_to_slope():
 	push_error("_normalize_movement_to_slope() method must be overriden")
 	# maybe delete
 
+####
+#
+# Lifecycle methods
+func _ready():
+	# To make Hector not collide with enemies unless he hits the `BounceArea`
+	# PS: this is fucking awesome groups are the SHIT (look at IDEAS.md)
+	for node in get_tree().get_nodes_in_group('BounceEnemy'):
+		add_collision_exception_with(node)
 
+#######
+#
+# Signal handlers
 func take_damage():
 	push_error("take_damage() method must be overriden")
 
