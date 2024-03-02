@@ -1,8 +1,6 @@
 extends CharacterBody2D
 
-var SPEED = 100
-var GRAVITY = 600
-var JUMP = -300
+var SPEED:float = 100
 
 var last_dir = 1
 # positive means right negitive means left
@@ -24,6 +22,8 @@ enum AudioState {
 
 var audio_state: AudioState = AudioState.none
 
+const GHOST = preload('res://Scenes/ghost_trail_sprite_2d.tscn')
+
 signal animation_change(animation)
 
 enum AnimationState {
@@ -35,10 +35,14 @@ enum AnimationState {
 	duck_down, duck_up,
 }
 
+func _init():
+	add_to_group('on_off_able')
+
 func _set_animation(anim_state: AnimationState, frame: int = 0):
 	var anim = AnimationState.keys()[anim_state]
 	$CharSprite.play(anim)
-	if Global.DEBUG: emit_signal('animation_change', anim)
+	if Global.DEBUG:
+		emit_signal('animation_change', anim)
 
 
 func _set_audio(audio: AudioState):

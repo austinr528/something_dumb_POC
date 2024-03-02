@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cupebkngs7xpl"]
+[gd_scene load_steps=5 format=3 uid="uid://cupebkngs7xpl"]
 
 [ext_resource type="Script" path="res://src/Character.gd" id="1_o61xr"]
 [ext_resource type="Script" path="res://src/CharLabel.gd" id="2_7ty36"]
+[ext_resource type="PackedScene" uid="uid://j8begc4in3bw" path="res://Scenes/ghost_trail_sprite_2d.tscn" id="3_xhvgq"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jxuhc"]
 radius = 6.125
@@ -24,6 +25,8 @@ offset_bottom = -19.7149
 script = ExtResource("2_7ty36")
 
 [node name="CharAudioPlayer" type="AudioStreamPlayer2D" parent="."]
+
+[node name="GhostTrailSprite2D" parent="." instance=ExtResource("3_xhvgq")]
 
 [connection signal="animation_change" from="." to="CharLabel" method="_on_character_animation_change"]
 [connection signal="finished" from="CharAudioPlayer" to="." method="_on_char_audio_player_finished"]

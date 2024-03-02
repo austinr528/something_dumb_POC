@@ -5,6 +5,8 @@
 .import/
 export.cfg
 export_presets.cfg
+# godot creates a LOT of tmp files (you know every OS has a temp dir dumbass)
+*.tmp
 # Dummy HTML5 export presets file for continuous integration
 !.github/dist/export_presets.cfg
 

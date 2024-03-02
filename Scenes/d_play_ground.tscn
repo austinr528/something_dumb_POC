@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://mtvo73itg2ng"]
+[gd_scene load_steps=15 format=3 uid="uid://mtvo73itg2ng"]
 
 [ext_resource type="TileSet" uid="uid://bgtxasewjv8jh" path="res://Assets/GrassGround/GrassGroundTileSet.tres" id="1_4bwqe"]
 [ext_resource type="Script" path="res://src/d_play_ground.gd" id="1_mmscq"]
 [ext_resource type="Texture2D" uid="uid://6m7d1ox7prcm" path="res://Assets/GrassGround/newTiles.png" id="3_otsof"]
+[ext_resource type="Script" path="res://src/Camera2D.gd" id="3_rm7ud"]
 [ext_resource type="PackedScene" uid="uid://cbv2xoi5q2yv0" path="res://Scenes/falling_platform.tscn" id="4_ja0r8"]
 [ext_resource type="PackedScene" uid="uid://bwsrrnhmk5wp6" path="res://Scenes/hector.tscn" id="6_7eog5"]
 [ext_resource type="PackedScene" uid="uid://biq6gmb57o5bj" path="res://Scenes/yokey_baddie.tscn" id="6_vi5k2"]
@@ -242,6 +243,7 @@ drag_top_margin = 0.3
 drag_right_margin = 0.3
 drag_bottom_margin = 0.3
 editor_draw_drag_margin = true
+script = ExtResource("3_rm7ud")
 
 [node name="TileMap2" type="TileMap" parent="."]
 z_index = -1
@@ -307,3 +309,5 @@ scale = Vector2(2, 2)
 [node name="SpikeTileMap" parent="." instance=ExtResource("10_w68nb")]
 scale = Vector2(2, 2)
 layer_0/tile_data = PackedInt32Array(-458721, 0, 0, -458720, 0, 1, -458719, 0, 7, -458718, 0, 0, -458717, 0, 0)
+
+[connection signal="viewport_moved" from="Camera2D" to="." method="_on_camera_2d_viewport_moved"]

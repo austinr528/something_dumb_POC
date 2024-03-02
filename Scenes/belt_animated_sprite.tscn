@@ -1,0 +1,77 @@
+[gd_scene load_steps=11 format=3 uid="uid://hpcvokvn0k3r"]
+
+[ext_resource type="Texture2D" uid="uid://b31pda4n6mr5p" path="res://Assets/Hector/hector.png" id="1_5ikdh"]
+[ext_resource type="Script" path="res://src/belt_animated_sprite.gd" id="2_xh136"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k8fgx"]
+atlas = ExtResource("1_5ikdh")
+region = Rect2(0, 302, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_feqgk"]
+atlas = ExtResource("1_5ikdh")
+region = Rect2(64, 302, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v8v0t"]
+atlas = ExtResource("1_5ikdh")
+region = Rect2(128, 302, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sk0jt"]
+atlas = ExtResource("1_5ikdh")
+region = Rect2(192, 302, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hltu2"]
+atlas = ExtResource("1_5ikdh")
+region = Rect2(256, 302, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ixht"]
+atlas = ExtResource("1_5ikdh")
+region = Rect2(320, 302, 64, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vionj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k8fgx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_feqgk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v8v0t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sk0jt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hltu2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ixht")
+}],
+"loop": false,
+"name": &"default",
+"speed": 32.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kgr47"]
+radius = 4.04367
+
+[node name="BeltAnimatedSprite" type="AnimatedSprite2D"]
+texture_filter = 1
+position = Vector2(18.7288, 0)
+scale = Vector2(2.58528, 2)
+sprite_frames = SubResource("SpriteFrames_vionj")
+frame = 5
+frame_progress = 1.0
+script = ExtResource("2_xh136")
+
+[node name="BeltArea2D" type="Area2D" parent="."]
+priority = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BeltArea2D"]
+position = Vector2(15.054, 0.311226)
+shape = SubResource("CircleShape2D_kgr47")
+
+[connection signal="animation_finished" from="." to="." method="_on_animation_finished"]
+[connection signal="frame_changed" from="." to="." method="_on_frame_changed"]
+[connection signal="body_entered" from="BeltArea2D" to="." method="_on_belt_area_2d_body_entered"]

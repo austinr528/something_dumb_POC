@@ -1,8 +1,7 @@
 extends CharacterBody2D
 
-@export var speed: float = 100.0
 var gravity: float = 350.0
-@export var jump: float = -175.0
+var jump: float = -175.0
 
 var limit_movement = 0
 var start_pos = 0
@@ -17,6 +16,7 @@ func get_speed(): pass
 func timer_process(): pass
 func animation_process(): pass
 func bounced_on(): pass
+func belt_hit(): pass
 # For some reason $AnimatedSprite2D/VisibleOnScreenNotifier2D is null here
 # so this has to be a method
 func is_on_screen() -> bool:
@@ -27,7 +27,12 @@ func is_on_screen() -> bool:
 func _draw():
 	if Global.DEBUG:
 		var to_add = $Direction.scale.x * 10
-		draw_line($Direction.position + Vector2(to_add, 0), $Direction.position + Vector2(to_add, 40), Color.WHITE, 1)
+		draw_line(
+			$Direction.position + Vector2(to_add, 0),
+			$Direction.position + Vector2(to_add, 40),
+			Color(1.0, 1.0, 1.0, 0.3),
+			1
+		)
 
 # Detect when we approch a ledge and turn around
 # Returns true if facing ledge (we are about to fall off a ledge)

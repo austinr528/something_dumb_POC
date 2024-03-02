@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://j8begc4in3bw"]
+
+[ext_resource type="Script" path="res://src/ghost_trail_sprite_2d.gd" id="1_cungd"]
+
+[node name="GhostTrailSprite2D" type="Sprite2D"]
+texture_filter = 1
+scale = Vector2(2, 2)
+script = ExtResource("1_cungd")
+
+[node name="GhostTrailTimer" type="Timer" parent="."]
+wait_time = 3.0
+
+[connection signal="timeout" from="GhostTrailTimer" to="." method="_on_ghost_trail_timer_timeout"]

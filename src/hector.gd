@@ -7,6 +7,8 @@ var RUN_VEL_MULT = 2.5
 var FRAMES_TO_STOP: float = 9.0
 var ACC_RATE: float = 60 / FRAMES_TO_STOP
 var MIN_DECEL: float = 1
+var FALL_VEL_MAX: float = 666.6
+
 
 # The amount of velocity added when attacking in any horizontal direction
 # (only applies to `velocity.x`)
@@ -45,14 +47,20 @@ var jump_velocity: float = ((2.0 * jump_height) / jump_time_to_peak) * -1.0
 var jump_gravity: float = ((-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)) * -1.0
 var fall_gravity: float = ((-2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)) * -1.0
 
-const TURN_DUST = preload("res://Scenes/turn_dust_cloud.tscn")
+const TURN_DUST = preload('res://Scenes/turn_dust_cloud.tscn')
 var dust_arr: Array = []
+
+const BELT = preload('res://Scenes/belt_animated_sprite.tscn')
+var belt: AnimatedSprite2D = null
 
 func _get_gravity() -> float:
 	return jump_gravity if velocity.y < 0.0 else fall_gravity
 
 func _jump() -> float:
 	return jump_velocity
+
+func _fall_vel_max(jmp_press: bool) -> float:
+	return FALL_VEL_MAX if not jmp_press else FALL_VEL_MAX / 1.5
 
 func is_walking(x_vel):
 	if x_vel == 0: return false
@@ -84,15 +92,18 @@ func jump_hector(delta: float):
 	#       off ledge
 	var is_jumped := Input.is_action_just_pressed("ui_jump")
 	# vertical movement velocity (down)
-	velocity.y += (_get_gravity() * delta) + vertical_attack_momentum 
+	velocity.y += (_get_gravity() * delta) + vertical_attack_momentum
+	# TODO: is this good... or bad
+	velocity.y = min(velocity.y, _fall_vel_max(Input.is_action_pressed('ui_jump')))
+
 	if is_jumped && !jumping:
 		_set_audio(AudioState.jump)
 		jumping = true
 		velocity.y = _jump()
 
-	if jumping && velocity.y < 0.0:
+	if jumping && velocity.y < 0.0 && !ducking:
 		anim_state = AnimationState.jump_up
-	elif jumping:
+	elif jumping && !ducking:
 		anim_state = AnimationState.jump_down
 	
 	if !is_jumped && is_on_floor():
@@ -185,13 +196,25 @@ func _physics_process(delta: float):
 		_set_audio(AudioState.attack)
 		anim_state = AnimationState.attack
 		attacking = true
+
 	elif attacking && (
 		($CharSprite.get_animation() == 'attack' && $CharSprite.get_frame() == 3)
 		|| $CharSprite.get_animation() != 'attack'
-		|| true
+		#|| true
 	):
 		attacking = false
 		var horiz_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
+		
+		var yflip = 90 if vert_input > 0 else 0 if vert_input == 0 else -90 
+		var xflip = 1 if last_dir > 0 else -1 
+		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
+		belt = BELT.instantiate()
+		belt.position.y = position.y + sprite_y_pos - 31
+		belt.position.x = position.x + 54
+		belt.scale *= xflip
+		belt.rotation = yflip
+		get_parent().add_child(belt)
+		belt.play()
 		#print('horizontal: {h} vertical: {v} last_dir: {d}'.format({ 'h': horiz_input, 'v': vert_input, 'd': last_dir }))
 		if horiz_input != 0:
 			horizontal_attack_momentum = horiz_input * ATTACK_VEL_STEP
@@ -205,9 +228,13 @@ func _physics_process(delta: float):
 		if vertical_attack_momentum != 0:
 			vertical_attack_momentum = 0
 
+	if belt != null:
+		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
+		belt.position.y += (position.y + sprite_y_pos - 31) - belt.position.y
+		belt.position.x += (position.x + 54) - belt.position.x
 	# we check that we aren't jumping or attacking in _horizontal_movement
 	_horizontal_movement(delta)
-	
+
 	# we need to reset the animation state to turning so it overrides
 	# default/walk/run... could maybe do this in _horizontal_movement at the end
 	if turning:
@@ -274,6 +301,7 @@ func _physics_process(delta: float):
 		damage_flicker_frames = 0
 		$CharSprite.modulate = Color(1, 1, 1, 1)
 
+	if Global.DEBUG: _debug_stuff(delta)
 	# Applies movement and also check if touched something that damges
 	if move_and_slide():
 		# This is another option, instead of signals and sprites
@@ -286,6 +314,7 @@ func _physics_process(delta: float):
 			if n.contains('Spike'):
 				damaged = true
 
+
 # Signal handlers
 #
 #
@@ -293,3 +322,25 @@ func _physics_process(delta: float):
 func take_damage():
 	print('damage')
 	damaged = true
+
+var accum_delta: float = 0.0
+func _debug_stuff(delta: float):
+	if (Global.DEBUG
+	   && false
+	):
+		if accum_delta + delta > .125:
+			accum_delta = 0.0
+			var ghost = GHOST.instantiate()
+			get_parent().add_child(ghost)
+			ghost.position = position
+			ghost.texture = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame)
+			ghost.flip_h = $CharSprite.flip_h
+			ghost.flip_v = $CharSprite.flip_v
+		else:
+			accum_delta += delta
+
+func _unhandled_input(event):
+	if event is InputEventJoypadButton:
+		print(event)
+		if event.button_index == JOY_BUTTON_START:
+			get_tree().quit()
