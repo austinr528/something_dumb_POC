@@ -326,7 +326,7 @@ func take_damage():
 var accum_delta: float = 0.0
 func _debug_stuff(delta: float):
 	if (Global.DEBUG
-	   && false
+	   #&& false
 	):
 		if accum_delta + delta > .125:
 			accum_delta = 0.0
