@@ -76,6 +76,10 @@ ui_attack={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_3="pipeEnter"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

@@ -53,6 +53,8 @@ var dust_arr: Array = []
 const BELT = preload('res://Scenes/belt_animated_sprite.tscn')
 var belt: AnimatedSprite2D = null
 
+var on_pipe: bool = false
+
 func _get_gravity() -> float:
 	return jump_gravity if velocity.y < 0.0 else fall_gravity
 
@@ -184,8 +186,38 @@ func _horizontal_movement(delta: float):
 func _normalize_movement_to_slope():
 	velocity.y = (SPEED * RUN_VEL_MULT)
 
+
+func _move_in_pipe(data: TileData):
+	if data != null && is_on_floor():
+		var move: Vector2 = data.get_custom_data('direction')
+		if move == null:
+			move = Vector2i()
+		match move:
+			Vector2.UP, Vector2.DOWN:
+				velocity.y = move.y * 100
+			Vector2.RIGHT, Vector2.LEFT:
+				velocity.x = move.x * -100
+		position += move * 2.0
+
+func pipe_movement():
+	_set_animation(AnimationState.default)
+	var collision: KinematicCollision2D = move_and_collide(velocity, true)
+	if collision && collision.get_collider().name.contains('PipeTileMap'):
+		var map: TileMap = collision.get_collider()
+		var coords: Vector2 = map.get_coords_for_body_rid(collision.get_collider_rid())
+		var data: TileData = map.get_cell_tile_data(0, coords)
+		_move_in_pipe(data)
+	else:
+		on_pipe = false
+
+
 #movement and physics
 func _physics_process(delta: float):
+	# We are in a pipe, move along the tile set bounds
+	if on_pipe:
+		pipe_movement()
+		return
+
 	var frame = 0
 
 	jump_hector(delta)
@@ -313,6 +345,13 @@ func _physics_process(delta: float):
 			#       `n.contains('Spike')` feels brittle
 			if n.contains('Spike'):
 				damaged = true
+			if n.contains('PipeTileMap'):
+				var map: TileMap = collision.get_collider()
+				var coords: Vector2 = map.get_coords_for_body_rid(collision.get_collider_rid())
+				var data: TileData = map.get_cell_tile_data(0, coords)
+				if data != null && is_on_floor() && data.get_custom_data('PipeEnter') == 'entry':
+					on_pipe = true
+					_move_in_pipe(data)
 
 
 # Signal handlers
