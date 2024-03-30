@@ -161,7 +161,7 @@ func _horizontal_movement(delta: float):
 		_normalize_movement_to_slope()
 
 	# This is to fix when sliding (probably any momentum gain) where there is no
-	# user direction set we would stuck in a turn animation, we now let momentum
+	# user direction set we would get stuck in a turn animation, we now let momentum
 	# define direction if user has not specified with horizontal_input
 	if horizontal_input == 0:
 		if velocity.x > 0:
@@ -189,6 +189,10 @@ func _normalize_movement_to_slope():
 
 func _move_in_pipe(data: TileData):
 	if data != null && is_on_floor():
+		# TODO: set skew based on TileSet custom data
+		var shade: ShaderMaterial = $CharSprite.get_material()
+		shade.set_shader_parameter('deformation', Vector2(1, 0.1));
+
 		var move: Vector2 = data.get_custom_data('direction')
 		if move == null:
 			move = Vector2i()
@@ -200,7 +204,6 @@ func _move_in_pipe(data: TileData):
 		position += move * 2.0
 
 func pipe_movement():
-	_set_animation(AnimationState.default)
 	var collision: KinematicCollision2D = move_and_collide(velocity, true)
 	if collision && collision.get_collider().name.contains('PipeTileMap'):
 		var map: TileMap = collision.get_collider()
@@ -208,14 +211,18 @@ func pipe_movement():
 		var data: TileData = map.get_cell_tile_data(0, coords)
 		_move_in_pipe(data)
 	else:
+		# Turn off the skew shader
+		# TODO: this could probalby be moved in to custom data on the TileSet cell
+		$CharSprite.get_material().set_shader_parameter('deformation', Vector2(0, 0));
 		on_pipe = false
 
 
-#movement and physics
+# Movement and Physics
 func _physics_process(delta: float):
 	# We are in a pipe, move along the tile set bounds
 	if on_pipe:
 		pipe_movement()
+		_set_animation(AnimationState.default)
 		return
 
 	var frame = 0
@@ -264,6 +271,7 @@ func _physics_process(delta: float):
 		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
 		belt.position.y += (position.y + sprite_y_pos - 31) - belt.position.y
 		belt.position.x += (position.x + 54) - belt.position.x
+
 	# we check that we aren't jumping or attacking in _horizontal_movement
 	_horizontal_movement(delta)
 
@@ -367,6 +375,7 @@ func _debug_stuff(delta: float):
 	if (Global.DEBUG
 	   #&& false
 	):
+		# Only emit ghost trail copy every 12ish frames
 		if accum_delta + delta > .125:
 			accum_delta = 0.0
 			var ghost = GHOST.instantiate()

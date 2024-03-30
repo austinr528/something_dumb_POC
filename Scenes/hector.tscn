@@ -10,7 +10,6 @@ script = ExtResource("2_bglaj")
 
 [node name="CharSprite" parent="." index="0"]
 sprite_frames = ExtResource("2_4h7s7")
-frame_progress = 0.599278
 
 [node name="CharColShape" parent="." index="1"]
 position = Vector2(-0.794602, 1.14594)
