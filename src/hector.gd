@@ -189,49 +189,7 @@ func _horizontal_movement(delta: float):
 func _normalize_movement_to_slope():
 	velocity.y = (SPEED * RUN_VEL_MULT)
 
-
-func _move_in_pipe(data: TileData):
-	if data != null && is_on_floor():
-		# TODO: set skew based on TileSet custom data
-		var shade: ShaderMaterial = $CharSprite.get_material()
-		# shade.set_shader_parameter('deformation', Vector2(1, 0.1))
-
-		var move: Vector2 = data.get_custom_data('direction')
-		if move == null:
-			move = Vector2i()
-		match move:
-			Vector2.UP, Vector2.DOWN:
-				velocity.y = move.y * 100
-			Vector2.RIGHT, Vector2.LEFT:
-				velocity.x = move.x * -100
-		position += move * 2.0
-
-func pipe_movement():
-	var collision: KinematicCollision2D = move_and_collide(velocity, true)
-	if collision && collision.get_collider().name.contains('PipeTileMap'):
-		var map: TileMap = collision.get_collider()
-		var coords: Vector2 = map.get_coords_for_body_rid(collision.get_collider_rid())
-		var data: TileData = map.get_cell_tile_data(0, coords)
-		_move_in_pipe(data)
-	else:
-		# Turn off the skew shader
-		# TODO: this could probalby be moved in to custom data on the TileSet cell
-		# $CharSprite.get_material().set_shader_parameter('deformation', Vector2(0, 0));
-		on_pipe = false
-
-# Movement and Physics
-func _physics_process(delta: float):
-	# We are in a pipe, move along the tile set bounds
-	if on_pipe:
-		pipe_movement()
-		_set_animation(AnimationState.default)
-		return
-
-	var frame = 0
-
-	jump_hector(delta)
-
-	var vert_input = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
+func _attack_hector(delta, vert_input):
 	# For now attack prevents/cancels jump
 	if Input.is_action_just_pressed('ui_attack'):
 		anim_state = AnimationState.attack
@@ -277,6 +235,51 @@ func _physics_process(delta: float):
 		
 		if belt.get_frame() > belt.get_sprite_frames().get_frame_count('default') * .75:
 			_set_audio(AudioState.attack)
+
+func _move_in_pipe(data: TileData):
+	if data != null && is_on_floor():
+		# TODO: set skew based on TileSet custom data
+		var shade: ShaderMaterial = $CharSprite.get_material()
+		# shade.set_shader_parameter('deformation', Vector2(1, 0.1))
+
+		var move: Vector2 = data.get_custom_data('direction')
+		if move == null:
+			move = Vector2i()
+		match move:
+			Vector2.UP, Vector2.DOWN:
+				velocity.y = move.y * 100
+			Vector2.RIGHT, Vector2.LEFT:
+				velocity.x = move.x * -100
+		position += move * 2.0
+
+func pipe_movement():
+	var collision: KinematicCollision2D = move_and_collide(velocity, true)
+	if collision && collision.get_collider().name.contains('PipeTileMap'):
+		var map: TileMap = collision.get_collider()
+		var coords: Vector2 = map.get_coords_for_body_rid(collision.get_collider_rid())
+		var data: TileData = map.get_cell_tile_data(0, coords)
+		_move_in_pipe(data)
+	else:
+		# Turn off the skew shader
+		# TODO: this could probalby be moved in to custom data on the TileSet cell
+		# $CharSprite.get_material().set_shader_parameter('deformation', Vector2(0, 0));
+		on_pipe = false
+
+# Movement and Physics
+func _physics_process(delta: float):
+	print(velocity.y)
+	# We are in a pipe, move along the tile set bounds
+	if on_pipe:
+		pipe_movement()
+		_set_animation(AnimationState.default)
+		return
+
+	var frame = 0
+
+	jump_hector(delta)
+
+	var vert_input = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
+	_attack_hector(delta, vert_input)
 
 	# we check that we aren't jumping or attacking in _horizontal_movement
 	_horizontal_movement(delta)
