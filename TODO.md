@@ -1,7 +1,7 @@
 # TODO
 
 - PROBLEM!!!: enemy lands on Hector and is stuck (Fixed 2/28 a few hours later oops)
-- duck animation makes Hector a few pixels off ground
+- duck animation makes Hector a few pixels off ground (Should be fixed)
 - Name tile maps like BlahTileMap
   - we may need to check if the collision object is TileMap
 - sliding animation (partly done 2/24/24)
@@ -11,6 +11,10 @@
   last direction especially if running
 - Add low jump and high jump dependent on how long pressed
 - running should have more ramp up time (time to full speed) (I still think this 2/24/24)
+- Sync sounds with belt animation being done not beginning
 
 NOT TODO:
 - Fixed all pixel snags in tile set
+
+# Things we have decided
+ - attack = down for upward momentum, left still gives left momentum, right gives right, and up gives downward momentum
