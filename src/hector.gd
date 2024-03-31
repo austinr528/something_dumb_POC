@@ -72,19 +72,30 @@ func is_walking(x_vel):
 		return x_vel > -SPEED
 
 func slide_hector():
+	# TODO: we need to differentiate between sliding down a slope and sliding off
+	# a ledge (corner) this should not be considered sliding
+	#
+	# Use RayCast2D to determine when we are on a ledge (see BounceBaddie.gd)
+	const EPSILON: float = 0.05
 	if is_on_floor():
 		var angle = get_floor_normal().angle()
-		if abs(angle) >= (PI/2)-0.005 and abs(angle) <= (PI/2)+0.005:
+		if abs(angle) >= (PI/2)- EPSILON and abs(angle) <= (PI/2) + EPSILON:
 			sliding = 0
 		else:
-			if abs(angle) > PI/2:
+			print(abs(angle))
+			if abs(angle) >= ((3 * PI) / 4) -  EPSILON and abs(angle) <= ((3 * PI) / 4) + EPSILON:
 				sliding = -1
 				direction = -1
-			elif abs(angle) < PI/2:
+				_normalize_movement_to_slope()
+			elif abs(angle) >= (PI / 4) -  EPSILON and abs(angle) <= (PI / 4) + EPSILON:
 				sliding = 1
 				direction = 1
+				_normalize_movement_to_slope()
+			else:
+				print('OOPS')
 			turning = false
 			anim_state = AnimationState.slide
+		
 	else:
 		sliding = 0
 
@@ -161,7 +172,7 @@ func _horizontal_movement(delta: float):
 		move_spd += (SPEED * RUN_VEL_MULT) * (delta * ACC_RATE)
 		# We must fall as fast as we are travelling horizontally or we "bounce"
 		# in and out of sliding
-		_normalize_movement_to_slope()
+		# _normalize_movement_to_slope()
 
 	# This is to fix when sliding (probably any momentum gain) where there is no
 	# user direction set we would get stuck in a turn animation, we now let momentum
@@ -381,7 +392,7 @@ func take_damage():
 
 var accum_delta: float = 0.0
 func _debug_stuff(delta: float):
-	if (Global.DEBUG_GHOST):
+	if (Global.DEBUG_GHOST()):
 		# Only emit ghost trail copy every 12ish frames
 		if accum_delta + delta > .125:
 			accum_delta = 0.0
@@ -396,6 +407,7 @@ func _debug_stuff(delta: float):
 
 func _unhandled_input(event):
 	if event is InputEventJoypadButton:
+		print(event)
 		if event.pressed && event.button_index == JOY_BUTTON_START:
-			Global.DEBUG_ALL = not Global.DEBUG_ALL
+			Global._DEBUG_ALL = not Global._DEBUG_ALL
 			# get_tree().quit()
