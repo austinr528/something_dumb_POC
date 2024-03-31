@@ -251,10 +251,18 @@ func _physics_process(delta: float):
 		var xflip = 1 if last_dir > 0 else -1 
 		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
 		belt = BELT.instantiate()
-		belt.position.y = position.y + sprite_y_pos - 31
-		belt.position.x = position.x + 54
+		if xflip == 1:
+			belt.flip_v = false
+			belt.position.y = position.y + sprite_y_pos - 31
+			belt.position.x = position.x + 54
+		else:
+			belt.flip_v = true
+			belt.position.y = position.y + sprite_y_pos - 31
+			belt.position.x = position.x - 54
 		belt.scale *= xflip
+		# this one we can get rid of once we have the animations
 		belt.rotation = yflip
+		
 		get_parent().add_child(belt)
 		belt.play()
 		print('horizontal: {h} vertical: {v} last_dir: {d}'.format({ 'h': horiz_input, 'v': vert_input, 'd': last_dir }))
