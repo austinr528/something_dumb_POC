@@ -219,7 +219,6 @@ func pipe_movement():
 		# $CharSprite.get_material().set_shader_parameter('deformation', Vector2(0, 0));
 		on_pipe = false
 
-
 # Movement and Physics
 func _physics_process(delta: float):
 	# We are in a pipe, move along the tile set bounds
@@ -235,7 +234,6 @@ func _physics_process(delta: float):
 	var vert_input = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
 	# For now attack prevents/cancels jump
 	if Input.is_action_just_pressed('ui_attack'):
-		_set_audio(AudioState.attack)
 		anim_state = AnimationState.attack
 		attacking = true
 
@@ -251,21 +249,12 @@ func _physics_process(delta: float):
 		var xflip = 1 if last_dir > 0 else -1 
 		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
 		belt = BELT.instantiate()
-		if xflip == 1:
-			belt.flip_v = false
-			belt.position.y = position.y + sprite_y_pos - 31
-			belt.position.x = position.x + 54
-		else:
-			belt.flip_v = true
-			belt.position.y = position.y + sprite_y_pos - 31
-			belt.position.x = position.x - 54
 		belt.scale *= xflip
 		# this one we can get rid of once we have the animations
 		belt.rotation = yflip
 		
 		get_parent().add_child(belt)
 		belt.play()
-		print('horizontal: {h} vertical: {v} last_dir: {d}'.format({ 'h': horiz_input, 'v': vert_input, 'd': last_dir }))
 		if horiz_input != 0:
 			horizontal_attack_momentum = horiz_input * ATTACK_VEL_STEP
 		# when belt pop down get a jump
@@ -281,8 +270,13 @@ func _physics_process(delta: float):
 
 	if belt != null:
 		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
+		belt.flip_v = last_dir < 0
+		var belt_x_pos_modi = 54 * last_dir
 		belt.position.y += (position.y + sprite_y_pos - 31) - belt.position.y
-		belt.position.x += (position.x + 54) - belt.position.x
+		belt.position.x += (position.x + belt_x_pos_modi) - belt.position.x
+		
+		if belt.get_frame() > belt.get_sprite_frames().get_frame_count('default') * .75:
+			_set_audio(AudioState.attack)
 
 	# we check that we aren't jumping or attacking in _horizontal_movement
 	_horizontal_movement(delta)

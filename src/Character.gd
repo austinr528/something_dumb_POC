@@ -41,7 +41,7 @@ func _init():
 func _set_animation(anim_state: AnimationState, frame: int = 0):
 	var anim = AnimationState.keys()[anim_state]
 	$CharSprite.play(anim)
-	if Global.DEBUG:
+	if Global.DEBUG_ALL:
 		emit_signal('animation_change', anim)
 
 

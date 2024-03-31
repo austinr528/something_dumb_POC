@@ -25,7 +25,7 @@ func is_on_screen() -> bool:
 	return false
 
 func _draw():
-	if Global.DEBUG:
+	if Global.DEBUG_ALL:
 		var to_add = $Direction.scale.x * 10
 		draw_line(
 			$Direction.position + Vector2(to_add, 0),
