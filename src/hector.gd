@@ -353,7 +353,7 @@ func _physics_process(delta: float):
 		damage_flicker_frames = 0
 		$CharSprite.modulate = Color(1, 1, 1, 1)
 
-	if Global.DEBUG: _debug_stuff(delta)
+	if Global.DEBUG_ALL: _debug_stuff(delta)
 	# Applies movement and also check if touched something that damges
 	if move_and_slide():
 		# This is another option, instead of signals and sprites
@@ -400,5 +400,5 @@ func _debug_stuff(delta: float):
 func _unhandled_input(event):
 	if event is InputEventJoypadButton:
 		if event.pressed && event.button_index == JOY_BUTTON_START:
-			Global.DEBUG = not Global.DEBUG
+			Global.DEBUG_ALL = not Global.DEBUG_ALL
 			# get_tree().quit()

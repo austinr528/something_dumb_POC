@@ -9,7 +9,7 @@ func _ready():
 
 
 func _draw():
-	if Global.DEBUG:
+	if Global.DEBUG_GRID:
 		var half_size: Vector2 = DisplayServer.screen_get_size() * 0.5
 		var low_left: Vector2 = pos - half_size
 		var up_right: Vector2 = pos + half_size
