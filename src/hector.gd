@@ -93,6 +93,9 @@ func jump_hector(delta: float):
 	# TODO: if jump is held fall slower no matter if falling from jump or walking
 	#       off ledge
 	var is_jumped := Input.is_action_just_pressed("ui_jump")
+	# if we get a belt pop bounce we want a full jump
+	if attacking:
+		velocity.y = 0
 	# vertical movement velocity (down)
 	velocity.y += (_get_gravity() * delta) + vertical_attack_momentum
 	# TODO: is this good... or bad
@@ -254,11 +257,12 @@ func _physics_process(delta: float):
 		belt.rotation = yflip
 		get_parent().add_child(belt)
 		belt.play()
-		#print('horizontal: {h} vertical: {v} last_dir: {d}'.format({ 'h': horiz_input, 'v': vert_input, 'd': last_dir }))
+		print('horizontal: {h} vertical: {v} last_dir: {d}'.format({ 'h': horiz_input, 'v': vert_input, 'd': last_dir }))
 		if horiz_input != 0:
 			horizontal_attack_momentum = horiz_input * ATTACK_VEL_STEP
-		if vert_input != 0:
-			vertical_attack_momentum = vert_input * _jump()
+		# when belt pop down get a jump
+		if vert_input < 0:
+			vertical_attack_momentum = -(vert_input * _jump())
 	else:
 		if horizontal_attack_momentum != 0:
 			horizontal_attack_momentum += -1 * horizontal_attack_momentum * (delta * ACC_RATE)
@@ -372,9 +376,7 @@ func take_damage():
 
 var accum_delta: float = 0.0
 func _debug_stuff(delta: float):
-	if (Global.DEBUG
-	   #&& false
-	):
+	if (Global.DEBUG_GHOST):
 		# Only emit ghost trail copy every 12ish frames
 		if accum_delta + delta > .125:
 			accum_delta = 0.0
