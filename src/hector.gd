@@ -194,7 +194,7 @@ func _move_in_pipe(data: TileData):
 	if data != null && is_on_floor():
 		# TODO: set skew based on TileSet custom data
 		var shade: ShaderMaterial = $CharSprite.get_material()
-		shade.set_shader_parameter('deformation', Vector2(1, 0.1));
+		# shade.set_shader_parameter('deformation', Vector2(1, 0.1))
 
 		var move: Vector2 = data.get_custom_data('direction')
 		if move == null:
@@ -216,7 +216,7 @@ func pipe_movement():
 	else:
 		# Turn off the skew shader
 		# TODO: this could probalby be moved in to custom data on the TileSet cell
-		$CharSprite.get_material().set_shader_parameter('deformation', Vector2(0, 0));
+		# $CharSprite.get_material().set_shader_parameter('deformation', Vector2(0, 0));
 		on_pipe = false
 
 
@@ -399,6 +399,6 @@ func _debug_stuff(delta: float):
 
 func _unhandled_input(event):
 	if event is InputEventJoypadButton:
-		print(event)
-		if event.button_index == JOY_BUTTON_START:
-			get_tree().quit()
+		if event.pressed && event.button_index == JOY_BUTTON_START:
+			Global.DEBUG = not Global.DEBUG
+			# get_tree().quit()
