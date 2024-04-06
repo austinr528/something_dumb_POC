@@ -11,12 +11,12 @@
   last direction especially if running
 - Add low jump and high jump dependent on how long pressed
 - running should have more ramp up time (time to full speed) (I still think this 2/24/24 (3/30 this is pretty good see momentum comment a few up))
-- Sync sounds with belt animation being done not beginning
-- TODO: we need to differentiate between sliding down a slope and sliding off a ledge (corner) this should not be considered sliding
-   -use RayCast2D to determine when we are on a ledge (see BounceBaddie.gd)
 
 NOT TODO:
-- Fixed all pixel snags in tile set
+- Fixed all pixel snags in tile set (fixed by moving the collision boxes)
+- we need to differentiate between sliding down a slope and sliding off a ledge (corner) this should not be considered sliding (we don't slide if not on 45 degree slope, a ledge is 180 and so outside of our +45 and -45 degree tolerance)
+   -use RayCast2D to determine when we are on a ledge (see BounceBaddie.gd)
+- Sync sounds with belt animation being done not beginning (this is pretty good now)
 
 # Things we have decided
  - attack = down for upward momentum, left still gives left momentum, right gives right, and up gives downward momentum

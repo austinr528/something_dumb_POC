@@ -66,12 +66,11 @@ frame_progress = 1.0
 script = ExtResource("2_xh136")
 
 [node name="BeltArea2D" type="Area2D" parent="."]
-priority = 2
+priority = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BeltArea2D"]
 position = Vector2(15.054, 0.311226)
 shape = SubResource("CircleShape2D_kgr47")
 
 [connection signal="animation_finished" from="." to="." method="_on_animation_finished"]
-[connection signal="frame_changed" from="." to="." method="_on_frame_changed"]
 [connection signal="body_entered" from="BeltArea2D" to="." method="_on_belt_area_2d_body_entered"]

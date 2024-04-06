@@ -18,14 +18,12 @@ func _process(delta):
 
 
 func _on_area_2d_body_entered(body):
-	# TODO: this is bad we just want Hectors belt...
 	if body.is_in_group('on_off_able'):
 		is_on = !is_on
 		emit_signal('on_off_changed', is_on)
 
 
 func _on_area_2d_area_entered(area):
-	# TODO: this is bad we just want Hectors belt...
 	if area.is_in_group('on_off_able'):
 		is_on = !is_on
 		emit_signal('on_off_changed', is_on)

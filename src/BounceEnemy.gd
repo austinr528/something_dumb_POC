@@ -17,6 +17,7 @@ func timer_process(): pass
 func animation_process(): pass
 func bounced_on(): pass
 func belt_hit(): pass
+
 # For some reason $AnimatedSprite2D/VisibleOnScreenNotifier2D is null here
 # so this has to be a method
 func is_on_screen() -> bool:

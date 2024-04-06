@@ -1,14 +1,14 @@
 extends CharacterBody2D
 
 
-@export var speed = 200
-var jump = -175
+@export var speed = 100
+var jump = -275
 
 var start_pos = 0
 var direction = -1
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var gravity: float = 400.0
 
 func _ready():
 	velocity.y = jump
@@ -31,7 +31,13 @@ func _physics_process(delta):
 	else:
 		move_and_slide()
 
+func belt_hit():
+	print('TODO: if we hit the attack with our belt what should it do (now we call queue_free())')
+	queue_free()
 
+# TODO: this seems to happen slowly so we bounce but we also get hurt
+#       maybe change the priority of these somehow, or set flag if we bounce
+#       to ignore damage???
 func _on_bounce_area_body_entered(body):
 	if body.has_method('bounce_on_box'):
 		body.bounce_on_box()

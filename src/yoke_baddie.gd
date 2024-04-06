@@ -40,8 +40,6 @@ func _on_attack_timer_timeout():
 	var yoke = YOKE.instantiate()
 	yoke.global_position.y = global_position.y - 43
 	yoke.global_position.x = global_position.x
-	print("position ", position)
-	print("direction ", direction)
 	yoke.direction = direction
 	get_parent().add_child(yoke)
 

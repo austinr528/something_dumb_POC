@@ -26,8 +26,9 @@ var turning = false
 var ducking = false
 
 # vars for keeping track of attack and attack momentum
-# (2/25/24 devin) I've pretty much turned this into dash, waiting for
-# Frost's input no feel of attack
+#
+# The base attack is the belt + momentum in the direction pressed left or right
+# pressing down gives upward momentum, up gives downward
 var attacking = false
 var horizontal_attack_momentum = 0
 var vertical_attack_momentum = 0
@@ -39,9 +40,9 @@ var damage_flicker_frames = 0
 # Hecotor's AnimationState, we start standing (default)
 var anim_state = AnimationState.default
 
-var jump_height: float = 100
-var jump_time_to_peak: float = 0.5
-var jump_time_to_descent: float = 0.4
+var jump_height: float = 125.0
+var jump_time_to_peak: float = 0.6
+var jump_time_to_descent: float = 0.3
 
 var jump_velocity: float = ((2.0 * jump_height) / jump_time_to_peak) * -1.0
 var jump_gravity: float = ((-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)) * -1.0
@@ -63,6 +64,12 @@ func _jump() -> float:
 
 func _fall_vel_max(jmp_press: bool) -> float:
 	return FALL_VEL_MAX if not jmp_press else FALL_VEL_MAX / 1.5
+
+# TODO: this probably needs some refinement, I think 175 is the 4th tick after
+# stepping of a ledge
+func _coyote_frames() -> bool:
+	print(velocity.y)
+	return velocity.y < 300.0
 
 func is_walking(x_vel):
 	if x_vel == 0: return false
@@ -92,7 +99,12 @@ func slide_hector():
 				direction = 1
 				_normalize_movement_to_slope()
 			else:
+				# We return to prevent setting the animation state to sliding which caused a few problems
+				#   - fast falling off the ledge
+				#   - the slide animation  
 				print('OOPS')
+				return
+
 			turning = false
 			anim_state = AnimationState.slide
 		
@@ -104,7 +116,11 @@ func jump_hector(delta: float):
 	# TODO: if jump is held fall slower no matter if falling from jump or walking
 	#       off ledge
 	var is_jumped := Input.is_action_just_pressed("ui_jump")
+	
 	# if we get a belt pop bounce we want a full jump
+	#
+	# This is true for 3 frames of the attack animation, we may want to make this
+	# more precise (only reset once)
 	if attacking:
 		velocity.y = 0
 	# vertical movement velocity (down)
@@ -112,13 +128,22 @@ func jump_hector(delta: float):
 	# TODO: is this good... or bad
 	velocity.y = min(velocity.y, _fall_vel_max(Input.is_action_pressed('ui_jump')))
 
-	if is_jumped && !jumping:
+	# if we just pressed jump and are not already jumping, we must either be on
+	# the ground or in the first few frames of stepping of a ledge
+	if is_jumped && !jumping && (is_on_floor() || _coyote_frames()):
 		_set_audio(AudioState.jump)
+		# A full jump is just shy of 6 blocks or 3 Hectors high
 		jumping = true
 		velocity.y = _jump()
 
-	if jumping && velocity.y < 0.0 && !ducking:
-		anim_state = AnimationState.jump_up
+	if jumping && velocity.y < 0.0:
+		if Input.is_action_just_released('ui_jump'):
+			# Stop jumping upwards this is a short jump now
+			#
+			# The total jump height works out to 4 blocks or 2 hectors
+			velocity.y += -(_jump()) / 3.0
+		if !ducking:
+			anim_state = AnimationState.jump_up
 	elif jumping && !ducking:
 		anim_state = AnimationState.jump_down
 	
@@ -278,7 +303,6 @@ func pipe_movement():
 
 # Movement and Physics
 func _physics_process(delta: float):
-	print(velocity.y)
 	# We are in a pipe, move along the tile set bounds
 	if on_pipe:
 		pipe_movement()
