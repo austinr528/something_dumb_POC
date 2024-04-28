@@ -68,8 +68,7 @@ func _fall_vel_max(jmp_press: bool) -> float:
 # TODO: this probably needs some refinement, I think 175 is the 4th tick after
 # stepping of a ledge
 func _coyote_frames() -> bool:
-	print(velocity.y)
-	return velocity.y < 300.0
+	return $LeftRay.is_colliding() || $RightRay.is_colliding()
 
 func is_walking(x_vel):
 	if x_vel == 0: return false
@@ -130,7 +129,7 @@ func jump_hector(delta: float):
 
 	# if we just pressed jump and are not already jumping, we must either be on
 	# the ground or in the first few frames of stepping of a ledge
-	if is_jumped && !jumping && (is_on_floor() || _coyote_frames()):
+	if is_jumped && !jumping && (did_bounce || _coyote_frames()):
 		_set_audio(AudioState.jump)
 		# A full jump is just shy of 6 blocks or 3 Hectors high
 		jumping = true
@@ -149,6 +148,7 @@ func jump_hector(delta: float):
 	
 	if !is_jumped && is_on_floor():
 		jumping = false
+		did_bounce = false
 
 
 func _get_max_spd() -> float:

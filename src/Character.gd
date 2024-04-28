@@ -8,6 +8,7 @@ var direction = 0
 var jumping = false
 var sprite_angle = 0.0
 var running = false
+var did_bounce = false
 
 const JUMP_SOUND = preload("res://Sounds/smw_jump.wav")
 const THWACK_SOUND = preload("res://Sounds/smw_stomp_no_damage.wav")
@@ -73,6 +74,21 @@ func _normalize_movement_to_slope():
 	push_error("_normalize_movement_to_slope() method must be overriden")
 	# maybe delete
 
+func _draw():
+	if Global.DEBUG_ALL:
+		draw_line(
+			$LeftRay.position,
+			$LeftRay.position + Vector2(0, 10),
+			Color(1.0, 1.0, 1.0, 0.3),
+			2
+		)
+		draw_line(
+			$RightRay.position,
+			$RightRay.position + Vector2(0, 10),
+			Color(1.0, 1.0, 1.0, 0.3),
+			2
+		)
+
 ####
 #
 # Lifecycle methods
@@ -93,6 +109,7 @@ func bounce_on_box():
 	print('bounce on BOX foo')
 	_set_audio(AudioState.bounce)
 	jumping = false
+	did_bounce = true
 	velocity.y = _jump()
 
 
