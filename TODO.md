@@ -11,6 +11,7 @@
   last direction especially if running
 - Add low jump and high jump dependent on how long pressed
 - running should have more ramp up time (time to full speed) (I still think this 2/24/24 (3/30 this is pretty good see momentum comment a few up))
+- falling platforms need to regen
 
 NOT TODO:
 - Fixed all pixel snags in tile set (fixed by moving the collision boxes)
@@ -20,3 +21,9 @@ NOT TODO:
 
 # Things we have decided
  - attack = down for upward momentum, left still gives left momentum, right gives right, and up gives downward momentum
+
+
+CLEANUP TODO: (4/28/24)
+- turning in its own func
+  - move dust into also
+- duck also it's own func

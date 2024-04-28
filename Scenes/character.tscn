@@ -36,5 +36,8 @@ target_position = Vector2(0.00640678, 27.1346)
 position = Vector2(16.0837, -8.73402)
 target_position = Vector2(0.218685, 25.0422)
 
+[node name="CenterRay" type="RayCast2D" parent="."]
+target_position = Vector2(0.0670395, 19.99)
+
 [connection signal="animation_change" from="." to="CharLabel" method="_on_character_animation_change"]
 [connection signal="finished" from="CharAudioPlayer" to="." method="_on_char_audio_player_finished"]

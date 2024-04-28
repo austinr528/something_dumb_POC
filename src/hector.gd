@@ -68,7 +68,7 @@ func _fall_vel_max(jmp_press: bool) -> float:
 # TODO: this probably needs some refinement, I think 175 is the 4th tick after
 # stepping of a ledge
 func _coyote_frames() -> bool:
-	return $LeftRay.is_colliding() || $RightRay.is_colliding()
+	return $LeftRay.is_colliding() || $CenterRay.is_colliding() || $RightRay.is_colliding()
 
 func is_walking(x_vel):
 	if x_vel == 0: return false
@@ -131,7 +131,7 @@ func jump_hector(delta: float):
 	# the ground or in the first few frames of stepping of a ledge
 	if is_jumped && !jumping && (did_bounce || _coyote_frames()):
 		_set_audio(AudioState.jump)
-		# A full jump is just shy of 6 blocks or 3 Hectors high
+		# A full jump is 4 blocks or 2 Hectors high
 		jumping = true
 		velocity.y = _jump()
 
@@ -139,7 +139,7 @@ func jump_hector(delta: float):
 		if Input.is_action_just_released('ui_jump'):
 			# Stop jumping upwards this is a short jump now
 			#
-			# The total jump height works out to 4 blocks or 2 hectors
+			# The total jump height works out to 2 blocks or 1 Hector
 			velocity.y += -(_jump()) / 3.0
 		if !ducking:
 			anim_state = AnimationState.jump_up
@@ -157,6 +157,7 @@ func _get_max_spd() -> float:
 # Sets the movement speed which is used for velocity, also sets turning to true
 # when we change direction
 func _set_move_spd(horizontal_input: int, delta: float):
+	# TODO: if we want to get rid of run mess with this stuff 
 	var acceloration = 0
 	var max_spd = _get_max_spd()
 	if direction == horizontal_input and horizontal_input != 0:
@@ -174,7 +175,6 @@ func _set_move_spd(horizontal_input: int, delta: float):
 	move_spd += acceloration
 	if move_spd < (delta * ACC_RATE):
 		move_spd = 0
-		
 	#print('speed: {d} rate: {rr} acc: {rd}'.format({ 'd': (move_spd), 'rr': delta * ACC_RATE, 'rd': acceloration, }))
 
 func _horizontal_movement(delta: float):
@@ -191,13 +191,12 @@ func _horizontal_movement(delta: float):
 	if turning:
 		horizontal_input = last_dir
 
+	# this means we are sliding
 	if sliding != 0:
 		horizontal_input = sliding
 		last_dir = sliding
+		# Sliding makes you quickly reach max speed
 		move_spd += (SPEED * RUN_VEL_MULT) * (delta * ACC_RATE)
-		# We must fall as fast as we are travelling horizontally or we "bounce"
-		# in and out of sliding
-		# _normalize_movement_to_slope()
 
 	# This is to fix when sliding (probably any momentum gain) where there is no
 	# user direction set we would get stuck in a turn animation, we now let momentum
@@ -388,6 +387,8 @@ func _physics_process(delta: float):
 	if Global.DEBUG_ALL: _debug_stuff(delta)
 	# Applies movement and also check if touched something that damges
 	if move_and_slide():
+		# TODO: figure out a better way to signal interaction with TileMaps
+		#       - One idea is to use groups and a signal, not sure which direction though 
 		# This is another option, instead of signals and sprites
 		# (a tileMap can't use signals or Area2D's)
 		for i in range(get_slide_collision_count()):

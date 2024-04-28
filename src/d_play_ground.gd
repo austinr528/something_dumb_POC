@@ -2,29 +2,24 @@ extends Node2D
 
 const STEP: int = 32
 
-var pos: Vector2
-
-func _ready():
-	pos = DisplayServer.screen_get_position()
-
-
 func _draw():
 	if Global.DEBUG_GRID():
-		var half_size: Vector2 = DisplayServer.screen_get_size() * 0.5
-		var low_left: Vector2 = pos - half_size
-		var up_right: Vector2 = pos + half_size
-		var curr_ll: Vector2 = low_left
 		var lines: PackedVector2Array = []
-		while curr_ll.x < up_right.x:
-			while curr_ll.y < up_right.y:
+		var up_left: Vector2 = Global.get_level_upleft_bounds(self)
+		var low_right: Vector2 = Global.get_level_lowright_bounds(self)
+		var curr_ul: Vector2 = up_left
+		while curr_ul.x < low_right.x:
+			while low_right.y > curr_ul.y:
 				# Lines from(x, y), to(x, y)
-				lines.append_array([ Vector2(low_left.x, curr_ll.y), Vector2(up_right.x, curr_ll.y) ])
-				lines.append_array([ Vector2(curr_ll.x, low_left.y), Vector2(curr_ll.x, up_right.y) ])
-				curr_ll.y += STEP
-			curr_ll.y = low_left.y
-			curr_ll.x += STEP
+				# this is the horizontal line pack
+				lines.append_array([ Vector2(up_left.x, curr_ul.y), Vector2(low_right.x, curr_ul.y) ])
+				# this is the vertical line pack
+				lines.append_array([ Vector2(curr_ul.x, low_right.y), Vector2(curr_ul.x, up_left.y) ])
+				# continue moving down (towards low of low_right)
+				curr_ul.y += STEP
+			# reset our vertical position so we don't start lower and lower each time (closer to low of low_right)
+			curr_ul.y = up_left.y
+			# continue march right for vertical lines
+			curr_ul.x += STEP
+		# Finally draw the damn lines...
 		draw_multiline(lines, Color(0.498039, 1, 0.831373, 0.005), 1.0)
-
-func _on_camera_2d_viewport_moved(new_pos: Vector2):
-	pos = new_pos
-	queue_redraw()
