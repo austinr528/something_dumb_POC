@@ -32,6 +32,7 @@ var ducking = false
 # pressing down gives upward momentum, up gives downward
 var dashing: bool = false
 var dash_frames: int = 0
+var down_dash: bool = false
 
 # vars for keeping track of damage flashing (60 frames basically)
 var damaged = false
@@ -126,9 +127,9 @@ func _jump_hector(delta: float):
 			#
 			# The total jump height works out to 2 blocks or 1 Hector
 			velocity.y += -(_jump()) / 3.0
-		if !ducking:
+		if !ducking && !dashing:
 			anim_state = AnimationState.jump_up
-	elif jumping && !ducking:
+	elif jumping && !ducking && !dashing:
 		anim_state = AnimationState.jump_down
 	
 	if !is_jumped && is_on_floor():
@@ -230,7 +231,9 @@ func _horizontal_movement(delta: float):
 func _normalize_movement_to_slope():
 	velocity.y = (SPEED * RUN_VEL_MULT)
 
-var down_dash: bool = false
+# Handle all the movement and animations/sounds for dashing
+#
+# We also emit any signals that are tied to the dash behavior
 func _dash_hector(delta, vert_input):
 	# For now dash prevents/cancels jump
 	if not dashing && Input.is_action_just_pressed('ui_dash'):
@@ -242,16 +245,20 @@ func _dash_hector(delta, vert_input):
 		dash_frames += 1
 		var horiz_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 
+		# down dash cancel (this is the only dash that can be stopped early
+		# the others are still in dash state but you don't move.
 		if down_dash && vert_input > 0:
 			dashing = false
 			down_dash = false
 			return
 
+		# Apply dash to our velocity (make us move fast)
 		velocity = Vector2(
 			(horiz_input * SPEED * RUN_VEL_MULT * DASH_MULT),
 			(vert_input * jump_velocity * (DASH_UP_MULT if not down_dash else DASH_MULT))
 		)
 
+		# everyother frame add a ghost trail (our dash effect)
 		if dash_frames % 2 == 0:
 			var dash_ghost = GHOST.instantiate()
 			dash_ghost.set_trail_type(0.5, Color(0.25, 1, 1, 0.4))
@@ -261,13 +268,18 @@ func _dash_hector(delta, vert_input):
 			dash_ghost.flip_h = $CharSprite.flip_h
 			dash_ghost.flip_v = $CharSprite.flip_v
 
+	# We get 15 frames of dash movement, about 4 blocks of horizontal movement
 	if dashing && dash_frames > 15 && !down_dash:
 		velocity.y = 0
 		dashing = false
+	# Down dash lasts as long as down is held or we hit a floor
 	elif down_dash && is_on_floor() or (down_dash && vert_input > -0.5):
 		dashing = false
 		down_dash = false
-		emit_signal("camera_shake", 50, 5)
+		if is_on_floor():
+			emit_signal("camera_shake", 50, 5)
+	if anim_state == AnimationState.jump_up or anim_state == AnimationState.jump_down:
+		anim_state = AnimationState.run
 
 func _move_in_pipe(data: TileData):
 	if data != null && is_on_floor():
