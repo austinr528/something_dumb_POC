@@ -12,8 +12,8 @@ var FALL_VEL_MAX: float = 666.6
 
 # The amount of velocity added when dashing in any horizontal direction
 # (only applies to `velocity.x`)
-var DASH_HORIZ_MULT = 2.0
-var DASH_VERT_MULT = 1.5
+var DASH_MULT = 2.0
+var DASH_UP_MULT = 1.5
 # The movement speed that determins when a skid stops
 var SKID_STOP_VEL = 20
 # The proportion ducking slows your x velocity
@@ -237,6 +237,7 @@ func _dash_hector(delta, vert_input):
 		dash_frames = 0
 		dashing = true
 		down_dash = vert_input < 0
+		emit_signal("camera_shake", 12, 15)
 	elif dashing:
 		dash_frames += 1
 		var horiz_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
@@ -247,8 +248,8 @@ func _dash_hector(delta, vert_input):
 			return
 
 		velocity = Vector2(
-			(horiz_input * SPEED * RUN_VEL_MULT * DASH_HORIZ_MULT),
-			(vert_input * jump_velocity * DASH_VERT_MULT)
+			(horiz_input * SPEED * RUN_VEL_MULT * DASH_MULT),
+			(vert_input * jump_velocity * (DASH_UP_MULT if not down_dash else DASH_MULT))
 		)
 
 		if dash_frames % 2 == 0:
@@ -263,9 +264,10 @@ func _dash_hector(delta, vert_input):
 	if dashing && dash_frames > 15 && !down_dash:
 		velocity.y = 0
 		dashing = false
-	elif down_dash && is_on_floor():
+	elif down_dash && is_on_floor() or (down_dash && vert_input > -0.5):
 		dashing = false
 		down_dash = false
+		emit_signal("camera_shake", 50, 5)
 
 func _move_in_pipe(data: TileData):
 	if data != null && is_on_floor():
@@ -420,9 +422,10 @@ func _debug_stuff(delta: float):
 			accum_delta += delta
 
 signal emit_debug_change()
+signal camera_shake()
+
 func _unhandled_input(event):
 	if event is InputEventJoypadButton:
-		print(event)
 		if event.pressed && event.button_index == JOY_BUTTON_START:
 			Global._DEBUG_ALL = not Global._DEBUG_ALL
 			queue_redraw()
