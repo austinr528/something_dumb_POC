@@ -17,7 +17,7 @@ const SNAP_SOUND = preload("res://Sounds/smw_bubble_pop.wav")
 enum AudioState {
 	none,
 	jump, jump_played,
-	attack, attack_played,
+	dash, dash_played,
 	bounce, bounce_played,
 }
 
@@ -32,7 +32,7 @@ enum AnimationState {
 	turn,
 	slide,
 	jump_up, jump_down,
-	attack, # will have all 4 directions :( sad
+	dash,
 	duck_down, duck_up,
 }
 
@@ -51,10 +51,10 @@ func _set_audio(audio: AudioState):
 			$CharAudioPlayer.set_stream(JUMP_SOUND)
 			if !$CharAudioPlayer.is_playing(): $CharAudioPlayer.play()
 			audio_state = AudioState.jump_played
-		AudioState.attack when audio_state != AudioState.attack_played:
+		AudioState.dash when audio_state != AudioState.dash_played:
 			$CharAudioPlayer.set_stream(SNAP_SOUND)
 			if !$CharAudioPlayer.is_playing(): $CharAudioPlayer.play()
-			audio_state = AudioState.attack_played
+			audio_state = AudioState.dash_played
 		AudioState.bounce when audio_state != AudioState.bounce_played:
 			$CharAudioPlayer.set_stream(THWACK_SOUND)
 			if !$CharAudioPlayer.is_playing(): $CharAudioPlayer.play()
@@ -75,7 +75,7 @@ func _normalize_movement_to_slope():
 	# maybe delete
 
 func _draw():
-	if Global.DEBUG_ALL:
+	if Global.DEBUG_ALL():
 		draw_line(
 			$LeftRay.position,
 			$LeftRay.position + Vector2(0, 10),

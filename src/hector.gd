@@ -10,9 +10,10 @@ var MIN_DECEL: float = 1
 var FALL_VEL_MAX: float = 666.6
 
 
-# The amount of velocity added when attacking in any horizontal direction
+# The amount of velocity added when dashing in any horizontal direction
 # (only applies to `velocity.x`)
-var ATTACK_VEL_STEP = 300
+var DASH_HORIZ_MULT = 2.0
+var DASH_VERT_MULT = 1.5
 # The movement speed that determins when a skid stops
 var SKID_STOP_VEL = 20
 # The proportion ducking slows your x velocity
@@ -25,13 +26,12 @@ var move_spd: float = 0.0
 var turning = false
 var ducking = false
 
-# vars for keeping track of attack and attack momentum
+# vars for keeping track of dash and dash momentum
 #
-# The base attack is the belt + momentum in the direction pressed left or right
+# The base dash is the belt + momentum in the direction pressed left or right
 # pressing down gives upward momentum, up gives downward
-var attacking = false
-var horizontal_attack_momentum = 0
-var vertical_attack_momentum = 0
+var dashing: bool = false
+var dash_frames: int = 0
 
 # vars for keeping track of damage flashing (60 frames basically)
 var damaged = false
@@ -104,19 +104,11 @@ func _apply_slide_animation():
 		sliding = 0
 
 func _jump_hector(delta: float):
-	# TODO: if jump is pressed for more than x frames high jump
-	# TODO: if jump is held fall slower no matter if falling from jump or walking
-	#       off ledge
 	var is_jumped := Input.is_action_just_pressed("ui_jump")
-	
-	# if we get a belt pop bounce we want a full jump
-	#
-	# This is true for 3 frames of the attack animation, we may want to make this
-	# more precise (only reset once)
-	if attacking:
-		velocity.y = 0
+
+
 	# vertical movement velocity (down)
-	velocity.y += (_get_gravity() * delta) + vertical_attack_momentum
+	velocity.y += (_get_gravity() * delta)
 	# TODO: is this good... or bad
 	velocity.y = min(velocity.y, _fall_vel_max(Input.is_action_pressed('ui_jump')))
 
@@ -154,10 +146,10 @@ func _apply_turn_animation():
 		dust_arr.push_back(dust)
 		# Finaly set the anim_state (mostly this comment is to visually distinguish since no shit)
 		anim_state = AnimationState.turn
-		# TODO: this fixes a bug where if you attacked then turned (maybe jumped)
-		# you would could stick attacking to forever be true and you could lock in any animation
+		# TODO: this fixes a bug where if you dashed then turned (maybe jumped)
+		# you would could stick dashing to forever be true and you could lock in any animation
 		# shorter than 3 frames (also using a specific frame and not an animation done signal is shitty)
-		attacking = false
+		dashing = false
 	# Delete any lingering dust
 	for d in dust_arr:
 		if !d.is_playing():
@@ -224,9 +216,9 @@ func _horizontal_movement(delta: float):
 	direction = horizontal_input
 
 	# horizontal velocity which moves player left or right based on input
-	velocity.x = (last_dir * move_spd) + horizontal_attack_momentum
+	velocity.x = (last_dir * move_spd)
 
-	if !jumping && !attacking && sliding == 0:
+	if !jumping && sliding == 0:
 		if is_walking(velocity.x):
 			anim_state = AnimationState.walk
 		# TODO: this needs to take a bit more time to reach top speed
@@ -238,42 +230,30 @@ func _horizontal_movement(delta: float):
 func _normalize_movement_to_slope():
 	velocity.y = (SPEED * RUN_VEL_MULT)
 
-func _attack_hector(delta, vert_input):
-	# For now attack prevents/cancels jump
-	if Input.is_action_just_pressed('ui_attack'):
-		anim_state = AnimationState.attack
-		attacking = true
-
-	elif attacking && (
-		($CharSprite.get_animation() == 'attack' && $CharSprite.get_frame() == 3)
-		|| $CharSprite.get_animation() != 'attack'
-		#|| true
-	):
-		attacking = false
+func _dash_hector(delta, vert_input):
+	# For now dash prevents/cancels jump
+	if not dashing && Input.is_action_just_pressed('ui_dash'):
+		dash_frames = 0
+		dashing = true
+	elif dashing:
+		dash_frames += 1
 		var horiz_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
-		
-		var yflip = 90 if vert_input > 0 else 0 if vert_input == 0 else -90 
-		var xflip = 1 if last_dir > 0 else -1 
-		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
-		belt = BELT.instantiate()
-		belt.scale *= xflip
-		# this one we can get rid of once we have the animations
-		belt.rotation = yflip
-		
-		get_parent().add_child(belt)
-		belt.play()
-		if horiz_input != 0:
-			horizontal_attack_momentum = horiz_input * ATTACK_VEL_STEP
-		# when belt pop down get a jump
-		if vert_input < 0:
-			vertical_attack_momentum = -(vert_input * _jump())
-	else:
-		if horizontal_attack_momentum != 0:
-			horizontal_attack_momentum += -1 * horizontal_attack_momentum * (delta * ACC_RATE)
-			if abs(horizontal_attack_momentum) < ACC_RATE:
-				horizontal_attack_momentum = 0
-		if vertical_attack_momentum != 0:
-			vertical_attack_momentum = 0
+
+		velocity = Vector2(
+			(horiz_input * SPEED * RUN_VEL_MULT * DASH_HORIZ_MULT),
+			(vert_input * jump_velocity * DASH_VERT_MULT)
+		)
+		if dash_frames % 2 == 0:
+			var dash_ghost = GHOST.instantiate()
+			dash_ghost.set_trail_type(0.5, Color(0.25, 1, 1, 0.4))
+			get_parent().add_child(dash_ghost)
+			dash_ghost.position = position
+			dash_ghost.texture = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame)
+			dash_ghost.flip_h = $CharSprite.flip_h
+			dash_ghost.flip_v = $CharSprite.flip_v
+	if dashing && dash_frames > 15:
+		velocity = Vector2(0, 0)
+		dashing = false
 
 	if belt != null:
 		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
@@ -283,7 +263,7 @@ func _attack_hector(delta, vert_input):
 		belt.position.x += (position.x + belt_x_pos_modi) - belt.position.x
 		
 		if belt.get_frame() > belt.get_sprite_frames().get_frame_count('default') * .75:
-			_set_audio(AudioState.attack)
+			_set_audio(AudioState.dash)
 
 func _move_in_pipe(data: TileData):
 	if data != null && is_on_floor():
@@ -354,7 +334,7 @@ func _apply_damage():
 		$CharSprite.modulate = Color(1, 1, 1, 1)
 
 func _apply_ducking_animation(vert_input: int):
-	if vert_input < 0 && !attacking && is_on_floor():
+	if vert_input < 0 && !dashing && is_on_floor():
 		ducking = true
 		anim_state = AnimationState.duck_down
 		velocity.x /= DUCK_VEL_DIV
@@ -380,9 +360,12 @@ func _physics_process(delta: float):
 
 	var vert_input: int = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
 	
-	_attack_hector(delta, vert_input)
-	# we check that we aren't jumping or attacking in _horizontal_movement
+	# we check that we aren't jumping in _horizontal_movement
 	_horizontal_movement(delta)
+	
+	# dashing overrides all momentum and gravity (it resets velocity)
+	_dash_hector(delta, vert_input)
+	
 	# we need to reset the animation state to turning so it overrides
 	# default/walk/run... could maybe do this in _horizontal_movement at the end
 	_apply_turn_animation()
@@ -425,6 +408,7 @@ func _debug_stuff(delta: float):
 		if accum_delta + delta > .125:
 			accum_delta = 0.0
 			var ghost = GHOST.instantiate()
+			ghost.set_trail_type(3.0, Color(1, 1, 1, 0.4))
 			get_parent().add_child(ghost)
 			ghost.position = position
 			ghost.texture = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame)
@@ -439,4 +423,5 @@ func _unhandled_input(event):
 		print(event)
 		if event.pressed && event.button_index == JOY_BUTTON_START:
 			Global._DEBUG_ALL = not Global._DEBUG_ALL
+			queue_redraw()
 			emit_signal("emit_debug_change")

@@ -28,14 +28,17 @@ script = ExtResource("2_7ty36")
 [node name="GhostTrailSprite2D" parent="." instance=ExtResource("3_xhvgq")]
 
 [node name="LeftRay" type="RayCast2D" parent="."]
+visible = false
 position = Vector2(-15.1825, -9.49808)
 target_position = Vector2(0.00640678, 27.1346)
 
 [node name="RightRay" type="RayCast2D" parent="."]
+visible = false
 position = Vector2(16.0837, -8.73402)
 target_position = Vector2(0.218685, 25.0422)
 
 [node name="CenterRay" type="RayCast2D" parent="."]
+visible = false
 target_position = Vector2(0.0670395, 19.99)
 
 [connection signal="animation_change" from="." to="CharLabel" method="_on_character_animation_change"]
