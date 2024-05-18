@@ -27,5 +27,6 @@ material = SubResource("CanvasItemMaterial_6vwvq")
 
 [node name="OnEdgeRay" type="RayCast2D" parent="Direction"]
 position = Vector2(10.2569, 0.0743256)
+target_position = Vector2(0, 20)
 
 [connection signal="body_entered" from="BounceArea" to="." method="_on_bounce_area_body_entered"]

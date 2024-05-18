@@ -4,9 +4,8 @@
 [ext_resource type="Script" path="res://src/CharLabel.gd" id="2_7ty36"]
 [ext_resource type="PackedScene" uid="uid://j8begc4in3bw" path="res://Scenes/ghost_trail_sprite_2d.tscn" id="3_xhvgq"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jxuhc"]
-radius = 6.125
-height = 28.5611
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bg55k"]
+size = Vector2(11.4905, 27.0469)
 
 [node name="Character" type="CharacterBody2D"]
 script = ExtResource("1_o61xr")
@@ -15,7 +14,7 @@ script = ExtResource("1_o61xr")
 
 [node name="CharColShape" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.0787458)
-shape = SubResource("CapsuleShape2D_jxuhc")
+shape = SubResource("RectangleShape2D_bg55k")
 
 [node name="CharLabel" type="Label" parent="."]
 offset_left = -20.69

@@ -12,7 +12,7 @@ script = ExtResource("2_bglaj")
 sprite_frames = ExtResource("2_4h7s7")
 
 [node name="CharColShape" parent="." index="1"]
-position = Vector2(-0.794602, 1.14594)
+position = Vector2(0.813263, 2.10469)
 
 [node name="RightRay" parent="." index="6"]
 target_position = Vector2(0.197575, 25.7764)

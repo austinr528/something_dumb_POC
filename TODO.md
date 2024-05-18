@@ -1,7 +1,6 @@
 # TODO
 
 - PROBLEM!!!: enemy lands on Hector and is stuck (Fixed 2/28 a few hours later oops)
-- duck animation makes Hector a few pixels off ground (Should be fixed)
 - Name tile maps like BlahTileMap
   - we may need to check if the collision object is TileMap
 - sliding animation (partly done 2/24/24)
@@ -9,9 +8,9 @@
 - Death blocks? (got a few 2/24/24)
 - add some momentum, when we stop inputing a direction he should slide a bit more in the (this is pretty good as of 2/24/24, even better 2/27 it now is almost as config as jumping)
   last direction especially if running
-- Add low jump and high jump dependent on how long pressed
 - running should have more ramp up time (time to full speed) (I still think this 2/24/24 (3/30 this is pretty good see momentum comment a few up))
 - falling platforms need to regen
+- Duck, jump and attack animation leaves player in running-ish state, this is a bug or we need a better attack animation/default post attack state
 
 NOT TODO:
 - Fixed all pixel snags in tile set (fixed by moving the collision boxes)
@@ -24,6 +23,9 @@ NOT TODO:
 
 
 CLEANUP TODO: (4/28/24)
-- turning in its own func
-  - move dust into also
-- duck also it's own func
+- make everything its own method
+
+
+## Features we need for test gounds
+- Debug menu for putting items, moving player, setting settings 
+- enemy spawn button (an "item" you touch to spawn specific enemy)

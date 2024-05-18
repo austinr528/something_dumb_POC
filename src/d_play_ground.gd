@@ -23,3 +23,8 @@ func _draw():
 			curr_ul.x += STEP
 		# Finally draw the damn lines...
 		draw_multiline(lines, Color(0.498039, 1, 0.831373, 0.005), 1.0)
+
+
+
+func _on_hector_emit_debug_change():
+	queue_redraw()

@@ -39,7 +39,7 @@ enum AnimationState {
 func _init():
 	add_to_group('on_off_able')
 
-func _set_animation(anim_state: AnimationState, frame: int = 0):
+func _set_animation(anim_state: AnimationState):
 	var anim = AnimationState.keys()[anim_state]
 	$CharSprite.play(anim)
 	emit_signal('animation_change', anim)

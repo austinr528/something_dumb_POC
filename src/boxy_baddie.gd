@@ -26,8 +26,11 @@ func bounced_on():
 func belt_hit():
 	bounced_on()
 
-func flip_ray():
-	$Direction.scale.x = -$Direction.scale.x
+func _set_ray_scale(sign: int):
+	$Direction.scale.x = sign
+	
+func _flip_ray():
+	$Direction.scale.x = -($Direction.scale.x)
 
 func _on_pain_area_body_entered(body):
 	if body.has_method('take_damage'):

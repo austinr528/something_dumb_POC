@@ -23,8 +23,11 @@ func animation_process():
 
 func bounced_on(): pass
 
-func flip_ray():
-	$Direction.scale.x = -$Direction.scale.x
+func _set_ray_scale(sign: int):
+	$Direction.scale.x = sign
+
+func _flip_ray():
+	$Direction.scale.x = -($Direction.scale.x)
 
 func _on_attack_timer_timeout():
 	var yoke = YOKE.instantiate()

@@ -17,6 +17,10 @@ func timer_process(): pass
 func animation_process(): pass
 func bounced_on(): pass
 func belt_hit(): pass
+func _set_ray_scale(sign: int):
+	push_error("_horizontal_movement() method must be overriden")
+func _flip_ray():
+	push_error("_horizontal_movement() method must be overriden")
 
 # For some reason $AnimatedSprite2D/VisibleOnScreenNotifier2D is null here
 # so this has to be a method
@@ -26,11 +30,10 @@ func is_on_screen() -> bool:
 	return false
 
 func _draw():
-	if Global.DEBUG_ALL:
-		var to_add = $Direction.scale.x * 10
+	if Global.DEBUG_ALL():
 		draw_line(
-			$Direction.position + Vector2(to_add, 0),
-			$Direction.position + Vector2(to_add, 40),
+			$Direction/OnEdgeRay.position,
+			$Direction/OnEdgeRay.position + Vector2(0, 20),
 			Color(1.0, 1.0, 1.0, 0.3),
 			1
 		)
@@ -42,13 +45,14 @@ func check_for_ledge() -> bool:
 	if not $Direction/OnEdgeRay.is_colliding():
 		# TODO: this needs to be a momentum swing
 		velocity.x = -velocity.x
-		direction = -(sign(direction))
+		direction = -sign(direction)
 		# move the ray to the other side of the sprite
-		$Direction.scale.x = -$Direction.scale.x
-		queue_redraw()
+		_flip_ray()
 		# We will wonder for 20 pixels the other way
-		limit_movement = 20000
+		limit_movement = 200
 		start_pos = position.x
+		if Global.DEBUG_ALL():
+			queue_redraw()
 		return true
 	else:
 		# No ledge
@@ -56,16 +60,14 @@ func check_for_ledge() -> bool:
 
 func _ready():
 	direction = get_global_position().direction_to(get_node('../Hector').get_global_position()).x
-	$Direction/OnEdgeRay.scale.x = sign(direction)
+	_set_ray_scale(-sign(direction))
 
 func _physics_process(delta):
 	if is_on_screen():
 		if not is_on_floor():
 			velocity.y += gravity * delta
-
 		timer_process()
 		animation_process()
-
 		velocity.x = direction * get_speed()
 		# we don't need to turn around to avoid ledge
 		if not check_for_ledge():
@@ -77,7 +79,7 @@ func _physics_process(delta):
 			# We haven't just turned around, find Hector to kill
 			else:
 				direction = get_global_position().direction_to(get_node('../Hector').get_global_position()).x
-				$Direction/OnEdgeRay.scale.x = sign(direction)
+				_set_ray_scale(sign(direction))
 		move_and_slide()
 
 func _on_bounce_area_body_entered(body):

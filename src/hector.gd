@@ -40,7 +40,7 @@ var damage_flicker_frames = 0
 # Hecotor's AnimationState, we start standing (default)
 var anim_state = AnimationState.default
 
-var jump_height: float = 125.0
+var jump_height: float = 128.0
 var jump_time_to_peak: float = 0.6
 var jump_time_to_descent: float = 0.3
 
@@ -77,11 +77,7 @@ func is_walking(x_vel):
 	else:
 		return x_vel > -SPEED
 
-func slide_hector():
-	# TODO: we need to differentiate between sliding down a slope and sliding off
-	# a ledge (corner) this should not be considered sliding
-	#
-	# Use RayCast2D to determine when we are on a ledge (see BounceBaddie.gd)
+func _apply_slide_animation():
 	const EPSILON: float = 0.05
 	if is_on_floor():
 		var angle = get_floor_normal().angle()
@@ -101,16 +97,13 @@ func slide_hector():
 				# We return to prevent setting the animation state to sliding which caused a few problems
 				#   - fast falling off the ledge
 				#   - the slide animation  
-				print('OOPS')
 				return
-
 			turning = false
 			anim_state = AnimationState.slide
-		
 	else:
 		sliding = 0
 
-func jump_hector(delta: float):
+func _jump_hector(delta: float):
 	# TODO: if jump is pressed for more than x frames high jump
 	# TODO: if jump is held fall slower no matter if falling from jump or walking
 	#       off ledge
@@ -150,6 +143,27 @@ func jump_hector(delta: float):
 		jumping = false
 		did_bounce = false
 
+func _apply_turn_animation():
+	if turning:
+		# TODO: we instantiate numberious dust clouds (one each tick) which doesn't look terrible (maybe)
+		var dust = TURN_DUST.instantiate()
+		dust.global_position.y = (global_position.y +
+			($CharSprite.get_sprite_frames().get_frame_texture('walk', 0).get_height() - 3))
+		dust.global_position.x = global_position.x
+		get_parent().add_child(dust)
+		dust_arr.push_back(dust)
+		# Finaly set the anim_state (mostly this comment is to visually distinguish since no shit)
+		anim_state = AnimationState.turn
+		# TODO: this fixes a bug where if you attacked then turned (maybe jumped)
+		# you would could stick attacking to forever be true and you could lock in any animation
+		# shorter than 3 frames (also using a specific frame and not an animation done signal is shitty)
+		attacking = false
+	# Delete any lingering dust
+	for d in dust_arr:
+		if !d.is_playing():
+			# TODO: The is exactly what you shouldn't do in a for loop...
+			dust_arr.erase(d)
+			d.queue_free()
 
 func _get_max_spd() -> float:
 	return (SPEED * RUN_VEL_MULT) if running else SPEED
@@ -182,7 +196,7 @@ func _horizontal_movement(delta: float):
 	# if keys are pressed it will return 1 for ui_right, -1 for ui_left, and 0 for neither
 	var horizontal_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 	
-	# Sets the property move_spd
+	# Sets the property move_spd, turning
 	_set_move_spd(horizontal_input, delta)
 	
 	# Make sure we skid the same direction we went last, basically we need
@@ -287,7 +301,7 @@ func _move_in_pipe(data: TileData):
 				velocity.x = move.x * -100
 		position += move * 2.0
 
-func pipe_movement():
+func _pipe_movement():
 	var collision: KinematicCollision2D = move_and_collide(velocity, true)
 	if collision && collision.get_collider().name.contains('PipeTileMap'):
 		var map: TileMap = collision.get_collider()
@@ -300,78 +314,33 @@ func pipe_movement():
 		# $CharSprite.get_material().set_shader_parameter('deformation', Vector2(0, 0));
 		on_pipe = false
 
-# Movement and Physics
-func _physics_process(delta: float):
-	# We are in a pipe, move along the tile set bounds
-	if on_pipe:
-		pipe_movement()
-		_set_animation(AnimationState.default)
-		return
+# Called when we have collided with some to check if the collision alters our state
+#
+# This happens with spikes for example.
+# - sets damaged and on_pipe
+func _check_for_tile_collisions():
+	# TODO: figure out a better way to signal interaction with TileMaps
+	#       - One idea is to use groups and a signal, not sure which direction though 
+	# This is another option, instead of signals and sprites
+	# (a tileMap can't use signals or Area2D's)
+	for i in range(get_slide_collision_count()):
+		var collision: KinematicCollision2D = get_slide_collision(i)
+		var n: String = collision.get_collider().name
+		# TODO: this is the only thing I don't love about this
+		#       `n.contains('Spike')` feels brittle
+		if n.contains('Spike'):
+			damaged = true
+		if n.contains('PipeTileMap'):
+			var map: TileMap = collision.get_collider()
+			var coords: Vector2 = map.get_coords_for_body_rid(collision.get_collider_rid())
+			var data: TileData = map.get_cell_tile_data(0, coords)
+			if data != null && is_on_floor() && data.get_custom_data('PipeEnter') == 'entry':
+				on_pipe = true
+				_move_in_pipe(data)
 
-	var frame = 0
-
-	jump_hector(delta)
-
-	var vert_input = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
-	_attack_hector(delta, vert_input)
-
-	# we check that we aren't jumping or attacking in _horizontal_movement
-	_horizontal_movement(delta)
-
-	# we need to reset the animation state to turning so it overrides
-	# default/walk/run... could maybe do this in _horizontal_movement at the end
-	if turning:
-		# TODO: we do this a lot which doesn't look terrible (maybe)
-		var dust = TURN_DUST.instantiate()
-		dust.global_position.y = (global_position.y +
-			($CharSprite.get_sprite_frames().get_frame_texture('walk', 0).get_height() - 3))
-		dust.global_position.x = global_position.x
-		get_parent().add_child(dust)
-		dust_arr.push_back(dust)
-		# Finaly set the anim_state (mostly this comment is to visually distinguish since no shit)
-		anim_state = AnimationState.turn
-		# TODO: this fixes a bug where if you attacked then turned (maybe jumped)
-		# you would could stick attacking to forever be true and you could lock in any animation
-		# shorter than 3 frames (also using a specific frame and not an animation done signal is shitty)
-		attacking = false
-	# once animation is done delete
-	for d in dust_arr:
-		if !d.is_playing():
-			# TODO: The is exactly what you shouldn't do in a for loop...
-			dust_arr.erase(d)
-			d.queue_free()
-
-	# TODO: this is not great, it should be a bit more state machine-y
-	#
-	# We start ducking, play the duck_down animation
-	if vert_input < 0 && !attacking && is_on_floor():
-		ducking = true
-		anim_state = AnimationState.duck_down
-		velocity.x /= DUCK_VEL_DIV
-	# we are still ducking just play the last frame over and over
-	elif ducking && vert_input < 0 && $CharSprite.get_frame() == 2:
-		frame = 2
-	# we are getting up from ducking play duck_up
-	elif ducking && vert_input >= 0:
-		anim_state = AnimationState.duck_up
-		# The duck up animation is done we can now be whatever
-		if $CharSprite.get_frame() == 2:
-			ducking = false
-
-	# We want sliding to overwrite all other animation states
-	slide_hector()
-	
-	# Set the animation based on physics
-	_set_animation(anim_state, frame)
-
-	# orient the character to face the correct direction
-	if direction > 0 :
-		$CharSprite.flip_h = false
-		last_dir = 1
-	elif direction < 0:
-		$CharSprite.flip_h = true
-		last_dir = -1
-
+# Flickers the character for a set number of frames (currently 60)
+# once reached we set damaged to false
+func _apply_damage():
 	# This could also be done with a shader on the CharSprite I think
 	if damaged && damage_flicker_frames < 60:
 		damage_flicker_frames += 1
@@ -384,27 +353,61 @@ func _physics_process(delta: float):
 		damage_flicker_frames = 0
 		$CharSprite.modulate = Color(1, 1, 1, 1)
 
+func _apply_ducking_animation(vert_input: int):
+	if vert_input < 0 && !attacking && is_on_floor():
+		ducking = true
+		anim_state = AnimationState.duck_down
+		velocity.x /= DUCK_VEL_DIV
+	# we are still ducking just play the last frame over and over
+	# elif ducking && vert_input < 0 && $CharSprite.get_frame() == 2:
+	# we are getting up from ducking play duck_up
+	elif ducking && vert_input >= 0:
+		anim_state = AnimationState.duck_up
+		# The duck up animation is done we can now be whatever
+		if $CharSprite.get_frame() == 2:
+			ducking = false
+
+# Movement and Physics
+func _physics_process(delta: float):
+	# We are in a pipe, move along the tile set bounds (TODO: if we keep pipes this needs
+	# to be re done)
+	if on_pipe:
+		_pipe_movement()
+		_set_animation(AnimationState.default)
+		return
+
+	_jump_hector(delta)
+
+	var vert_input: int = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
+	
+	_attack_hector(delta, vert_input)
+	# we check that we aren't jumping or attacking in _horizontal_movement
+	_horizontal_movement(delta)
+	# we need to reset the animation state to turning so it overrides
+	# default/walk/run... could maybe do this in _horizontal_movement at the end
+	_apply_turn_animation()
+	# ducking overrides most states (you can't be jumping and duck)
+	# We start ducking, play the duck_down animation
+	_apply_ducking_animation(vert_input)
+	# We want sliding to overwrite all other animation states
+	_apply_slide_animation()
+	# Set the animation based on physics
+	_set_animation(anim_state)
+	_apply_damage()
+
 	if Global.DEBUG_ALL: _debug_stuff(delta)
+
+	# orient the character to face the correct direction
+	if direction > 0 :
+		$CharSprite.flip_h = false
+		last_dir = 1
+	elif direction < 0:
+		$CharSprite.flip_h = true
+		last_dir = -1
+
 	# Applies movement and also check if touched something that damges
 	if move_and_slide():
-		# TODO: figure out a better way to signal interaction with TileMaps
-		#       - One idea is to use groups and a signal, not sure which direction though 
-		# This is another option, instead of signals and sprites
-		# (a tileMap can't use signals or Area2D's)
-		for i in range(get_slide_collision_count()):
-			var collision: KinematicCollision2D = get_slide_collision(i)
-			var n: String = collision.get_collider().name
-			# TODO: this is the only thing I don't love about this
-			#       `n.contains('Spike')` feels brittle
-			if n.contains('Spike'):
-				damaged = true
-			if n.contains('PipeTileMap'):
-				var map: TileMap = collision.get_collider()
-				var coords: Vector2 = map.get_coords_for_body_rid(collision.get_collider_rid())
-				var data: TileData = map.get_cell_tile_data(0, coords)
-				if data != null && is_on_floor() && data.get_custom_data('PipeEnter') == 'entry':
-					on_pipe = true
-					_move_in_pipe(data)
+		_check_for_tile_collisions()
 
 
 # Signal handlers
@@ -430,9 +433,10 @@ func _debug_stuff(delta: float):
 		else:
 			accum_delta += delta
 
+signal emit_debug_change()
 func _unhandled_input(event):
 	if event is InputEventJoypadButton:
 		print(event)
 		if event.pressed && event.button_index == JOY_BUTTON_START:
 			Global._DEBUG_ALL = not Global._DEBUG_ALL
-			# get_tree().quit()
+			emit_signal("emit_debug_change")
