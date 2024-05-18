@@ -328,7 +328,7 @@ func _apply_damage():
 	# This could also be done with a shader on the CharSprite I think
 	if damaged && damage_flicker_frames < 60:
 		damage_flicker_frames += 1
-		if damage_flicker_frames % 6 == 0:
+		if damage_flicker_frames % 2 == 0:
 			$CharSprite.modulate = Color(1, 0.2, 0.2, .6)
 		else:
 			$CharSprite.modulate = Color(1, 1, 1, .4)
