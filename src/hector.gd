@@ -230,19 +230,27 @@ func _horizontal_movement(delta: float):
 func _normalize_movement_to_slope():
 	velocity.y = (SPEED * RUN_VEL_MULT)
 
+var down_dash: bool = false
 func _dash_hector(delta, vert_input):
 	# For now dash prevents/cancels jump
 	if not dashing && Input.is_action_just_pressed('ui_dash'):
 		dash_frames = 0
 		dashing = true
+		down_dash = vert_input < 0
 	elif dashing:
 		dash_frames += 1
 		var horiz_input = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
+
+		if down_dash && vert_input > 0:
+			dashing = false
+			down_dash = false
+			return
 
 		velocity = Vector2(
 			(horiz_input * SPEED * RUN_VEL_MULT * DASH_HORIZ_MULT),
 			(vert_input * jump_velocity * DASH_VERT_MULT)
 		)
+
 		if dash_frames % 2 == 0:
 			var dash_ghost = GHOST.instantiate()
 			dash_ghost.set_trail_type(0.5, Color(0.25, 1, 1, 0.4))
@@ -251,19 +259,13 @@ func _dash_hector(delta, vert_input):
 			dash_ghost.texture = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame)
 			dash_ghost.flip_h = $CharSprite.flip_h
 			dash_ghost.flip_v = $CharSprite.flip_v
-	if dashing && dash_frames > 15:
-		velocity = Vector2(0, 0)
-		dashing = false
 
-	if belt != null:
-		var sprite_y_pos = $CharSprite.get_sprite_frames().get_frame_texture($CharSprite.animation, $CharSprite.frame).get_height()
-		belt.flip_v = last_dir < 0
-		var belt_x_pos_modi = 54 * last_dir
-		belt.position.y += (position.y + sprite_y_pos - 31) - belt.position.y
-		belt.position.x += (position.x + belt_x_pos_modi) - belt.position.x
-		
-		if belt.get_frame() > belt.get_sprite_frames().get_frame_count('default') * .75:
-			_set_audio(AudioState.dash)
+	if dashing && dash_frames > 15 && !down_dash:
+		velocity.y = 0
+		dashing = false
+	elif down_dash && is_on_floor():
+		dashing = false
+		down_dash = false
 
 func _move_in_pipe(data: TileData):
 	if data != null && is_on_floor():
